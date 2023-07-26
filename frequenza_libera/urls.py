@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from base.views import create_podcast
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+    path('podcast/create', create_podcast, name='create_podcast'),
 ]
