@@ -4,14 +4,13 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from logger import logger
-from .models.podcast import Podcast
+from ..models.podcast import Podcast
 
 class PodcastAPITest(TestCase):
     """Running test cases for Podcast API
     
     python manage.py test podcast
     """
-    # python manage.py test podcast
 
     def setUp(self):
         self.client = APIClient()

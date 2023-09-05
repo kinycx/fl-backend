@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PodcastListCreateView, PodcastRetrieveUpdateDestroyView
+from .views.podcast import PodcastListCreateView, PodcastRetrieveUpdateDestroyView
 
 urlpatterns = [
     path('', PodcastListCreateView.as_view(), name='podcast-list-create'),
