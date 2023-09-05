@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.postgres import fields
-from podcaster.models import Podcaster
-from collection.models import Collection
+from rest_framework import serializers
+
+from .podcast_collection import PodcastCollection
+from .podcaster import Podcaster
 
 # Create your models here.
 class Podcast(models.Model):
@@ -12,12 +14,15 @@ class Podcast(models.Model):
         cover = models.ImageField(upload_to='images/Podcast', null=True, blank=True)
         insert_time = models.TimeField(auto_now_add=True)
         update_time = models.TimeField(auto_now=True)
-        collection = models.ForeignKey(Collection, on_delete=models.CASCADE, null=True, blank=True)
-        podcasters = models.ManyToManyField(Podcaster)
+        collection = models.ForeignKey(PodcastCollection, on_delete=models.CASCADE, null=True, blank=True)
+        podcasters = models.ManyToManyField(Podcaster, blank=True)
         
         def __unicode__(self):
             return self.name
         
-
+class PodcastSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Podcast
+        fields = '__all__'
 
 

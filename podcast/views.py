@@ -1,37 +1,23 @@
-from django.shortcuts import render
-
 # Create your views here.
 import json
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.generics import get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-import logging
+from logger import logger
+from .models.podcast import Podcast, PodcastSerializer
 
-from podcast.models import Podcast
+class PodcastListCreateView(ListCreateAPIView):
+    """View for listing and creating Podcasts (GET, POST)
 
-logging.basicConfig(level=logging.DEBUG)
+    """
+    queryset = Podcast.objects.all()
+    serializer_class = PodcastSerializer
 
-logger = logging.getLogger(__name__)
+class PodcastRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """View for retrieving, updating and deleting Podcasts (GET, PUT, DELETE)
 
-# Create your views here.
-def home(request):
-    return render(request, "home.html")
-
-@csrf_exempt
-def create_podcast(request):
-    if request.method == "POST":
-        body = request.body.decode('utf-8')
-        logger.info(body)
-        data = json.loads(body) # the load method is used to parse a JSON string
-        name = data.get("name")
-        duration = data.get("duration")
-        cover = data.get("cover")
-        collection = data.get("collection")
-        podcasters = data.get("podcasters")
-        subjects = data.get("subjects")
-        description = data.get("description")
-        podcast = Podcast.objects.create(name=name, description=description, duration=duration, cover=cover, collection=collection, podcasters=podcasters, subjects=subjects)
-        return JsonResponse({"id": podcast.id, "name": podcast.name, "description": podcast.description, "duration": podcast.duration, "cover": podcast.cover, "collection": podcast.collection, "podcasters": podcast.podcasters, "subjects": podcast.subjects})
-    else:
-        return HttpResponseNotAllowed(["POST"])
+    """
+    queryset = Podcast.objects.all()
+    serializer_class = PodcastSerializer
