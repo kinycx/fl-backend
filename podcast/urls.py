@@ -3,6 +3,8 @@ from .views import (
     PodcastListCreateView,
     PodcastRetrieveUpdateDestroyView,
     BulkCreatePodcastView,
+    ServeAudioView,
+    ServeRSSView,
 )
 
 
@@ -14,4 +16,6 @@ urlpatterns = [
         PodcastRetrieveUpdateDestroyView.as_view(),
         name="podcast-retrieve-update-destroy",
     ),
+    path("podcast.rss", ServeRSSView.as_view(), name="serve_rss"),
+    path("<str:filename>.mp3", ServeAudioView.as_view(), name="serve_audio"),
 ]
