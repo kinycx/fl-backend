@@ -71,4 +71,4 @@ spark-cluster.pem
 pyspark_deps.tar.gz
 /spark/emr-pack-test/load_satellite_data_bundled.py
 
-postgres-data/*
+postgres-data/
