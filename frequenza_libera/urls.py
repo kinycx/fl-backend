@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from services.feed import PodcastFeed
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("podcast/", include("podcast.urls")),
+    path("feed/rss/", PodcastFeed(), name="podcast_feed"),
     # path("podcaster/", include("podcaster.urls")),
     # path("podcast_collection/", include("podcast_collection.urls")),
 ]
