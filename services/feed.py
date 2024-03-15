@@ -16,6 +16,8 @@ s3 = boto3.client(
     region_name="eu-north-1",
 )
 
+bucket_url = f"https://{BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+
 
 def create_presigned_url(bucket_name, object_name, expiration=3600):
     """
@@ -46,6 +48,11 @@ class PodcastFeed(Feed):
     title = "Frequenza Libera Podcasts"
     link = "/podcast/"
     description = "Podcasts from Frequenza Libera"
+    author_name = "Frequenza Libera"
+    author_email = "dbfrequenzalibera@gmail.com"
+    image = (
+        "https://upload.wikimedia.org/wikipedia/commons/8/87/Logo_Frequenza_Libera.png"
+    )
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -61,7 +68,9 @@ class PodcastFeed(Feed):
 
     def item_enclosure_url(self, item):
         # Generate a presigned URL for the S3 object
-        presigned_url = create_presigned_url("podcast-fl", item.audio_url)
+        presigned_url = create_presigned_url(
+            "podcast-fl", Key=item.audio_url.replace(bucket_url, "")
+        )
         return presigned_url
 
     def item_enclosure_length(self, item):
@@ -71,7 +80,6 @@ class PodcastFeed(Feed):
         return "audio/mpeg"
 
     def item_enclosure_length(self, item):
-        bucket_url = f"https://{BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
         audio_file = s3.get_object(
             Bucket=BUCKET_NAME, Key=item.audio_url.replace(bucket_url, "")
         )
