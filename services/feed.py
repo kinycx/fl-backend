@@ -17,42 +17,27 @@ s3 = boto3.client(
 )
 
 bucket_url = f"https://{BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+from django.utils.feedgenerator import Rss201rev2Feed
 
 
-def create_presigned_url(bucket_name, object_name, expiration=3600):
-    """
-    Generate a presigned URL to share an S3 object
-
-    :param bucket_name: string
-    :param object_name: string
-    :param expiration: Time in seconds for the presigned URL to remain valid
-    :return: Presigned URL as string. If error, returns None.
-    """
-
-    # Generate a presigned URL for the S3 object
-    try:
-        response = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": bucket_name, "Key": object_name},
-            ExpiresIn=expiration,
-        )
-    except NoCredentialsError:
-        print("No AWS credentials found")
-        return None
-
-    # The response contains the presigned URL
-    return response
+class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
+    def rss_attributes(self):
+        return {
+            "version": self._version,
+            "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
+            "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
+        }
 
 
 class PodcastFeed(Feed):
-    title = "Frequenza Libera Podcasts"
-    link = "/podcast/"
-    description = "Podcasts from Frequenza Libera"
-    author_name = "Frequenza Libera"
-    author_email = "dbfrequenzalibera@gmail.com"
-    image = (
-        "https://upload.wikimedia.org/wikipedia/commons/8/87/Logo_Frequenza_Libera.png"
-    )
+    feed_type = iTunesPodcastsFeedGenerator
+    title = "Podcast Radio Frequenza Libera - On demand"
+    link = "https://podcast.frequenzalibera.it/"
+    description = "Tutte le registrazioni delle nostre dirette in Podcast!"
+    author_name = "Radio Frequenza Libera"
+    author_email = "rfl.radiofrequenzalibera@gmail.com"
+    categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
+    image = "https://podcast.frequenzalibera.it/images/itunes_image.jpg"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -67,20 +52,10 @@ class PodcastFeed(Feed):
         return item.audio_url
 
     def item_enclosure_url(self, item):
-        # Generate a presigned URL for the S3 object
-        presigned_url = create_presigned_url(
-            "podcast-fl", Key=item.audio_url.replace(bucket_url, "")
-        )
-        return presigned_url
+        return item.audio_url
 
     def item_enclosure_length(self, item):
         return item.duration
 
     def item_enclosure_mime_type(self, item):
         return "audio/mpeg"
-
-    def item_enclosure_length(self, item):
-        audio_file = s3.get_object(
-            Bucket=BUCKET_NAME, Key=item.audio_url.replace(bucket_url, "")
-        )
-        return audio_file["ContentLength"]
