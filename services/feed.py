@@ -55,7 +55,9 @@ class PodcastFeed(Feed):
         return item.audio_url
 
     def item_enclosure_length(self, item):
-        return item.duration
+        key = item.audio_url.split("amazonaws.com/")[-1]
+        response = s3.head_object(Bucket=BUCKET_NAME, Key=key)
+        return response["ContentLength"]
 
     def item_enclosure_mime_type(self, item):
         return "audio/mpeg"
