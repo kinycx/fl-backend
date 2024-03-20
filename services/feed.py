@@ -1,7 +1,7 @@
 import os
 import boto3
 from django.contrib.syndication.views import Feed
-from botocore.exceptions import NoCredentialsError
+from django.utils.feedgenerator import Rss201rev2Feed
 
 from podcast.models import Podcast
 
@@ -17,7 +17,6 @@ s3 = boto3.client(
 )
 
 bucket_url = f"https://{BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
-from django.utils.feedgenerator import Rss201rev2Feed
 
 
 class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
@@ -26,18 +25,19 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
             "version": self._version,
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
             "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
+            "xmlns:atom": "http://www.w3.org/2005/Atom",  # Add this line
         }
 
 
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
     title = "Podcast Radio Frequenza Libera - On demand"
-    link = "https://podcast.frequenzalibera.it/"
+    link = "https://fl-backend.replit.app/feed/rss/"
     description = "Tutte le registrazioni delle nostre dirette in Podcast!"
     author_name = "Radio Frequenza Libera"
     author_email = "rfl.radiofrequenzalibera@gmail.com"
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
-    image = "https://podcast.frequenzalibera.it/images/itunes_image.jpg"
+    image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
