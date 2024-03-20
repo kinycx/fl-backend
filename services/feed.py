@@ -30,15 +30,11 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
-        handler.addQuickElement("itunes:author", self.feed["itunes_author"])
-        handler.addQuickElement("itunes:owner", self.feed["itunes_owner"])
-        handler.addQuickElement("itunes:image", self.feed["itunes_image"])
-
-    def add_item_elements(self, handler, item):
-        super().add_item_elements(handler, item)
-        handler.addQuickElement("itunes:author", item["itunes_author"])
-        handler.addQuickElement("itunes:owner", item["itunes_owner"])
-        handler.addQuickElement("itunes:image", item["itunes_image"])
+        handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
+        handler.startElement("itunes:owner", {})
+        handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
+        handler.addQuickElement("itunes:email", "rfl.radiofrequenzalibera@gmail.com")
+        handler.endElement("itunes:owner")
 
 
 class PodcastFeed(Feed):
@@ -50,20 +46,6 @@ class PodcastFeed(Feed):
     author_email = "rfl.radiofrequenzalibera@gmail.com"
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
-
-    def feed_extra_kwargs(self, obj):
-        return {
-            "author_name": self.author_name,
-            "author_email": self.author_email,
-            "image": self.image,
-        }
-
-    def item_extra_kwargs(self, item):
-        return {
-            "author_name": self.author_name,
-            "author_email": self.author_email,
-            "image": self.image,
-        }
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
