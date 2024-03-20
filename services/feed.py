@@ -30,23 +30,15 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
-        handler.addQuickElement("itunes:author", self.feed["author_name"])
-        handler.startElement("itunes:owner", {})
-        handler.addQuickElement("itunes:name", self.feed["author_name"])
-        handler.addQuickElement("itunes:email", self.feed["author_email"])
-        handler.endElement("itunes:owner")
-        handler.startElement("itunes:image", {"href": self.feed["image"]})
-        handler.endElement("itunes:image")
+        handler.addQuickElement("itunes:author", self.feed["itunes_author"])
+        handler.addQuickElement("itunes:owner", self.feed["itunes_owner"])
+        handler.addQuickElement("itunes:image", self.feed["itunes_image"])
 
     def add_item_elements(self, handler, item):
         super().add_item_elements(handler, item)
-        handler.addQuickElement("itunes:author", item["author_name"])
-        handler.startElement("itunes:owner", {})
-        handler.addQuickElement("itunes:name", item["author_name"])
-        handler.addQuickElement("itunes:email", item["author_email"])
-        handler.endElement("itunes:owner")
-        handler.startElement("itunes:image", {"href": item["image"]})
-        handler.endElement("itunes:image")
+        handler.addQuickElement("itunes:author", item["itunes_author"])
+        handler.addQuickElement("itunes:owner", item["itunes_owner"])
+        handler.addQuickElement("itunes:image", item["itunes_image"])
 
 
 class PodcastFeed(Feed):
