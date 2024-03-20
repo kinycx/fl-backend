@@ -28,6 +28,26 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
             "xmlns:atom": "http://www.w3.org/2005/Atom",  # Add this line
         }
 
+    def add_root_elements(self, handler):
+        super().add_root_elements(handler)
+        handler.addQuickElement("itunes:author", self.feed["author_name"])
+        handler.startElement("itunes:owner", {})
+        handler.addQuickElement("itunes:name", self.feed["author_name"])
+        handler.addQuickElement("itunes:email", self.feed["author_email"])
+        handler.endElement("itunes:owner")
+        handler.startElement("itunes:image", {"href": self.feed["image"]})
+        handler.endElement("itunes:image")
+
+    def add_item_elements(self, handler, item):
+        super().add_item_elements(handler, item)
+        handler.addQuickElement("itunes:author", item["author_name"])
+        handler.startElement("itunes:owner", {})
+        handler.addQuickElement("itunes:name", item["author_name"])
+        handler.addQuickElement("itunes:email", item["author_email"])
+        handler.endElement("itunes:owner")
+        handler.startElement("itunes:image", {"href": item["image"]})
+        handler.endElement("itunes:image")
+
 
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
@@ -38,6 +58,20 @@ class PodcastFeed(Feed):
     author_email = "rfl.radiofrequenzalibera@gmail.com"
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
+
+    def feed_extra_kwargs(self, obj):
+        return {
+            "author_name": self.author_name,
+            "author_email": self.author_email,
+            "image": self.image,
+        }
+
+    def item_extra_kwargs(self, item):
+        return {
+            "author_name": self.author_name,
+            "author_email": self.author_email,
+            "image": self.image,
+        }
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
