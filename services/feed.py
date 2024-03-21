@@ -25,11 +25,17 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         return {
             "version": self._version,
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
+            # "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
             "xmlns:atom": "http://www.w3.org/2005/Atom",
         }
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
+        handler.addQuickElement(
+            "managingEditor",
+            "rfl.radiofrequenzalibera@gmail.com (Radio Frequenza Libera)",
+        )
+
         handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
         handler.addQuickElement("itunes:explicit", "false")
         handler.startElement(
@@ -49,6 +55,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
             "itunes:category", {"text": "Government"}
         )  # Change this line
         handler.endElement("itunes:category")
+
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
         handler.addQuickElement("itunes:email", "rfl.radiofrequenzalibera@gmail.com")
@@ -65,6 +72,7 @@ class PodcastFeed(Feed):
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
     language = "it"
+    email = "rfl.radiofrequenzalibera@gmail.com"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -94,7 +102,7 @@ class PodcastFeed(Feed):
         return "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
 
     def item_guid(self, item):  # Add this method
-        return str(item.id)
+        return item.audio_url
 
     def item_explicit(self, item):  # Add this method
         return "no"
