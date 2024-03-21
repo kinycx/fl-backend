@@ -1,6 +1,6 @@
 import os
 import boto3
-import datetime
+from datetime import datetime, date
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 
@@ -100,5 +100,6 @@ class PodcastFeed(Feed):
         return "no"
 
     def item_pubdate(self, item):
-        # Change the date format to RFC-822
-        return item.insert_time.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        # Combine the current date with the time
+        dt = datetime.combine(date.today(), item.insert_time)
+        return dt
