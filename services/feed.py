@@ -9,6 +9,7 @@ from podcast.models import Podcast
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
+email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
     service_name="s3",
@@ -25,7 +26,6 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         return {
             "version": self._version,
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
-            # "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
             "xmlns:atom": "http://www.w3.org/2005/Atom",
         }
 
@@ -33,7 +33,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         super().add_root_elements(handler)
         handler.addQuickElement(
             "managingEditor",
-            "rfl.radiofrequenzalibera@gmail.com (Radio Frequenza Libera)",
+            email,
         )
 
         handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
@@ -58,7 +58,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
-        handler.addQuickElement("itunes:email", "rfl.radiofrequenzalibera@gmail.com")
+        handler.addQuickElement("itunes:email", email)
         handler.endElement("itunes:owner")
 
 
@@ -68,11 +68,10 @@ class PodcastFeed(Feed):
     link = "https://fl-backend.replit.app/feed/rss/"  # Change this line
     description = "Tutte le registrazioni delle nostre dirette in Podcast!"
     author_name = "Radio Frequenza Libera"
-    author_email = "rfl.radiofrequenzalibera@gmail.com"
+    author_email = email
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
     language = "it"
-    email = "rfl.radiofrequenzalibera@gmail.com"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -98,8 +97,7 @@ class PodcastFeed(Feed):
         return "audio/mpeg"
 
     def item_enclosure_cover(self, item):
-        # return item.cover
-        return "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
+        return item.cover
 
     def item_guid(self, item):  # Add this method
         return item.audio_url
