@@ -14,7 +14,7 @@ class Podcast(models.Model):
     description = models.TextField(null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     audio_url = models.URLField(null=True, blank=True)
-    cover = models.ImageField(upload_to="images/Podcast", null=True, blank=True)
+    cover = models.URLField(null=True, blank=True)
     insert_time = models.TimeField(auto_now_add=True)
     update_time = models.TimeField(auto_now=True)
     collection = models.ForeignKey(

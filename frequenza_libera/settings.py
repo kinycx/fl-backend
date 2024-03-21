@@ -36,9 +36,7 @@ DEBUG = os.getenv("DEBUG", "False")
 SECRET_KEY = "django-insecure-(rq_6h^^(q+=l3(oekb!@$+)-$!*x#v07r4ity#1ydaju&mj7q"
 
 
-ALLOWED_HOSTS = [
-    os.getenv("PROD_HOST"),
-]
+ALLOWED_HOSTS = [os.getenv("PROD_HOST"), "localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
 
 # Application definition

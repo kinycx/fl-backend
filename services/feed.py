@@ -25,14 +25,13 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         return {
             "version": self._version,
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
-            "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
             "xmlns:atom": "http://www.w3.org/2005/Atom",
         }
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
         handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
-        handler.addQuickElement("itunes:explicit", "no")
+        handler.addQuickElement("itunes:explicit", "false")
         handler.startElement(
             "itunes:image",
             {
@@ -40,32 +39,32 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
             },
         )
         handler.endElement("itunes:image")
-        handler.addQuickElement("itunes:category", "Arts")  # Modify this line
-        handler.addQuickElement(
-            "itunes:category", "Games & Hobbies > Video Games"
-        )  # Modify this line
-        handler.addQuickElement(
-            "itunes:category", "News & Politics"
-        )  # Modify this line
-        handler.addQuickElement("language", "en-us")
-        handler.addQuickElement(
-            "lastBuildDate",
-            datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S %z"),
-        )
+        handler.startElement("itunes:category", {"text": "Arts"})
+        handler.endElement("itunes:category")
+        handler.startElement(
+            "itunes:category", {"text": "Games & Hobbies"}
+        )  # Change this line
+        handler.endElement("itunes:category")
+        handler.startElement(
+            "itunes:category", {"text": "Government"}
+        )  # Change this line
+        handler.endElement("itunes:category")
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
         handler.addQuickElement("itunes:email", "rfl.radiofrequenzalibera@gmail.com")
         handler.endElement("itunes:owner")
 
+
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
     title = "Podcast Radio Frequenza Libera - On demand"
-    link = "/feed/rss/"
+    link = "https://fl-backend.replit.app/feed/rss/"  # Change this line
     description = "Tutte le registrazioni delle nostre dirette in Podcast!"
     author_name = "Radio Frequenza Libera"
     author_email = "rfl.radiofrequenzalibera@gmail.com"
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
+    language = "it"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -91,12 +90,8 @@ class PodcastFeed(Feed):
         return "audio/mpeg"
 
     def item_enclosure_cover(self, item):
-        return item.cover_url
-
-    # def item_pubdate(self, item):
-    #     return (
-    #         item.insert_time
-    #     )  # Modify this line to return the publication date of the episode
+        # return item.cover
+        return "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
 
     def item_guid(self, item):  # Add this method
         return str(item.id)
@@ -105,5 +100,5 @@ class PodcastFeed(Feed):
         return "no"
 
     def item_pubdate(self, item):
-        # hardcode the date for now
-        return datetime.datetime.now()
+        # Change the date format to RFC-822
+        return item.insert_time.strftime("%a, %d %b %Y %H:%M:%S +0000")
