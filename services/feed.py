@@ -41,7 +41,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.startElement(
             "itunes:image",
             {
-                "href": "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
+                "href": "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
             },
         )
         handler.endElement("itunes:image")
@@ -64,13 +64,16 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
-    title = "Podcast Radio Frequenza Libera - On demand"
+    title = "Podcast Radio Frequenza Libera"
     link = "https://fl-backend.replit.app/feed/rss/"  # Change this line
-    description = "Tutte le registrazioni delle nostre dirette in Podcast!"
+    description = "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, " \
+            "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora " \
+            "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle " \
+            "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
     author_name = "Radio Frequenza Libera"
     author_email = email
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
-    image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
+    image = "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
     language = "it"
 
     def items(self):
