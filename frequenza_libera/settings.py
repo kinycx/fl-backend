@@ -53,6 +53,15 @@ INSTALLED_APPS = [
     "podcast_collection.apps.PodcastCollectionConfig",
 ]
 
+# settings.py
+
+DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
+
+AWS_REGION = "eu-north-1"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
+AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
