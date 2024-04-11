@@ -31,7 +31,7 @@ class Podcast(models.Model):
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
         if self.audio_file:
-            self.audio_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{upload_foler}{self.audio_file.name.replace(' ', '_')}"
+            self.audio_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{upload_folder}{self.audio_file.name.replace(' ', '_')}"
         super().save(*args, **kwargs)
 
 
