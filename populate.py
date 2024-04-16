@@ -1,11 +1,13 @@
+import os
 import boto3
 import sqlite3
-from datetime import datetime
+import json
 
-from podcast.models import Podcast
 
 def get_s3_objects(bucket_name, prefix):
-  s3 = boto3.client('s3')
+  s3 = boto3.client('s3',
+                    aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
+                    aws_secret_access_key=os.getenv('AWS_SECRET_KEY'))
   response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
 
   if 'Contents' in response:
@@ -13,36 +15,41 @@ def get_s3_objects(bucket_name, prefix):
   else:
     return []
 
+
 def fetch_podcasts_from_database(database_path):
   conn = sqlite3.connect(database_path)
   cursor = conn.cursor()
 
   podcasts = []
-  for row in cursor.execute('SELECT title, description, date, file_name FROM podcasts'):
-    title, description, date_str, file_name = row
-    date = datetime.strptime(date_str, '%Y-%m-%d')  # Assuming date format YYYY-MM-DD
-    podcast = {
-      'title': title,
-      'description': description,
-      'date': date,
-      'file_name': file_name
-    }
+  for row in cursor.execute('SELECT title, shortdesc, mtime FROM episodes'):
+    title, shortdesc, mtime = row
+    podcast = {'title': title, 'shortdesc': shortdesc, 'date': mtime}
     podcasts.append(podcast)
 
   conn.close()
   return podcasts
 
+
 def process_data(bucket_name, prefix, database_path):
   s3_objects = get_s3_objects(bucket_name, prefix)
-  print(s3_object)
   podcasts_data = fetch_podcasts_from_database(database_path)
-  print(podcast_data)
-
+  result_data = []
+  flag = True
+  not_done = 0
   for podcast_data in podcasts_data:
     for s3_object in s3_objects:
-      if podcast_data['date'].strftime('%Y-%m-%d') in s3_object:
-        podcast_data['file_url'] = f"https://{bucket_name}.s3.amazonaws.com/{s3_object}"
-        Podcast.objects.create(**podcast_data)
+      if podcast_data['date'].split(' ')[0] == s3_object.split('_')[0].replace(
+          'mp3/.', ''):
+        podcast_data[
+            'file_url'] = f"https://{bucket_name}.s3.amazonaws.com/{s3_object}"
+        result_data.append(podcast_data)
+        flag = False
+    if flag:
+      not_done += 1
+  print(f'Not done: {not_done}')
+  with open('result.json', 'w') as f:
+    json.dump(result_data, f, indent=4)
+
 
 bucket_name = 'podcast-fl'
 prefix = 'mp3/'
