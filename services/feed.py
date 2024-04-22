@@ -100,7 +100,7 @@ class PodcastFeed(Feed):
         return "audio/mpeg"
 
     def item_enclosure_cover(self, item):
-        return item.cover
+        return item.cover_url
 
     def item_guid(self, item):  # Add this method
         return item.audio_url
