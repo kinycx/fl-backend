@@ -1,5 +1,6 @@
 import os
 import boto3
+from datetime import datetime, date
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 
@@ -8,6 +9,7 @@ from podcast.models import Podcast
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
+email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
     service_name="s3",
@@ -24,46 +26,55 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         return {
             "version": self._version,
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
-            "xmlns:googleplay": "http://www.google.com/schemas/play-podcasts/1.0",
-            "xmlns:atom": "http://www.w3.org/2005/Atom",  # Add this line
+            "xmlns:atom": "http://www.w3.org/2005/Atom",
         }
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
-        handler.addQuickElement("itunes:author", self.feed["itunes_author"])
-        handler.addQuickElement("itunes:owner", self.feed["itunes_owner"])
-        handler.addQuickElement("itunes:image", self.feed["itunes_image"])
+        handler.addQuickElement(
+            "managingEditor",
+            email,
+        )
 
-    def add_item_elements(self, handler, item):
-        super().add_item_elements(handler, item)
-        handler.addQuickElement("itunes:author", item["itunes_author"])
-        handler.addQuickElement("itunes:owner", item["itunes_owner"])
-        handler.addQuickElement("itunes:image", item["itunes_image"])
+        handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
+        handler.addQuickElement("itunes:explicit", "false")
+        handler.startElement(
+            "itunes:image",
+            {
+                "href": "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
+            },
+        )
+        handler.endElement("itunes:image")
+        handler.startElement("itunes:category", {"text": "Arts"})
+        handler.endElement("itunes:category")
+        handler.startElement(
+            "itunes:category", {"text": "Games & Hobbies"}
+        )  # Change this line
+        handler.endElement("itunes:category")
+        handler.startElement(
+            "itunes:category", {"text": "Government"}
+        )  # Change this line
+        handler.endElement("itunes:category")
+
+        handler.startElement("itunes:owner", {})
+        handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
+        handler.addQuickElement("itunes:email", email)
+        handler.endElement("itunes:owner")
 
 
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
-    title = "Podcast Radio Frequenza Libera - On demand"
-    link = "https://fl-backend.replit.app/feed/rss/"
-    description = "Tutte le registrazioni delle nostre dirette in Podcast!"
+    title = "Podcast Radio Frequenza Libera"
+    link = "https://fl-backend.replit.app/feed/rss/"  # Change this line
+    description = "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, " \
+            "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora " \
+            "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle " \
+            "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
     author_name = "Radio Frequenza Libera"
-    author_email = "rfl.radiofrequenzalibera@gmail.com"
+    author_email = email
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
-    image = "https://www.aandmedu.in/wp-content/uploads/2021/11/1-1-Aspect-Ratio-1024x1024.jpg"
-
-    def feed_extra_kwargs(self, obj):
-        return {
-            "author_name": self.author_name,
-            "author_email": self.author_email,
-            "image": self.image,
-        }
-
-    def item_extra_kwargs(self, item):
-        return {
-            "author_name": self.author_name,
-            "author_email": self.author_email,
-            "image": self.image,
-        }
+    image = "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
+    language = "it"
 
     def items(self):
         return Podcast.objects.all().order_by("-insert_time")
@@ -87,3 +98,17 @@ class PodcastFeed(Feed):
 
     def item_enclosure_mime_type(self, item):
         return "audio/mpeg"
+
+    def item_enclosure_cover(self, item):
+        return item.cover_url
+
+    def item_guid(self, item):  # Add this method
+        return item.audio_url
+
+    def item_explicit(self, item):  # Add this method
+        return "no"
+
+    def item_pubdate(self, item):
+        # Combine the current date with the time
+        dt = datetime.combine(date.today(), item.insert_time)
+        return dt

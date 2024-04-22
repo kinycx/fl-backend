@@ -36,9 +36,7 @@ DEBUG = os.getenv("DEBUG", "False")
 SECRET_KEY = "django-insecure-(rq_6h^^(q+=l3(oekb!@$+)-$!*x#v07r4ity#1ydaju&mj7q"
 
 
-ALLOWED_HOSTS = [
-    os.getenv("PROD_HOST"),
-]
+ALLOWED_HOSTS = [os.getenv("PROD_HOST"), "localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
 
 # Application definition
@@ -54,6 +52,15 @@ INSTALLED_APPS = [
     "podcaster.apps.PodcasterConfig",
     "podcast_collection.apps.PodcastCollectionConfig",
 ]
+
+# settings.py
+
+DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
+
+AWS_REGION = "eu-north-1"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
+AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
