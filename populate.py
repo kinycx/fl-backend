@@ -50,16 +50,23 @@ def process_data(bucket_name, prefix, database_path):
         result_data.append(podcast_data)
         flag = False
         s3_objects_done.append(s3_object)
+        break
     if flag:
       podcast_data_not_done.append(podcast_data['title'])
   s3_objects_not_done = []
   for s3_object in s3_objects:
     if not s3_object in s3_objects_done:
       s3_objects_not_done.append(s3_object)
-  print(f'Podcast data not done:\n{podcast_data_not_done}')
-  print(f'S3 Objects not done:\n{s3_objects_not_done}')
   with open('result.json', 'w') as f:
     json.dump(result_data, f, indent=2)
+  with open('mismatch.json', 'w') as f:
+    json.dump(
+        {
+            'podcast_data_not_done': podcast_data_not_done,
+            's3_objects_not_done': s3_objects_not_done
+        },
+        f,
+        indent=2)
 
 
 process_data(bucket_name, prefix, database_path)
