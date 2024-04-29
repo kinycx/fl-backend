@@ -5,7 +5,6 @@ from datetime import datetime
 from django.db import models
 from rest_framework import serializers
 from django.conf import settings
-from mutagen.mp3 import MP3
 
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
@@ -48,9 +47,6 @@ class Podcast(models.Model):
     def save(self, *args, **kwargs):
         if self.audio_file:
             self.audio_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{audio_upload_folder}{self.audio_file.name.replace(' ', '_')}"
-            # Calculate the duration
-            audio = MP3(self.audio_file.path)
-            self.duration = audio.info.length
         if self.cover_file:
             self.cover_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{cover_upload_folder}{self.cover_file.name.replace(' ', '_')}"
         if self.insert_time is None:
@@ -61,8 +57,8 @@ class Podcast(models.Model):
                 response = s3.head_object(Bucket=BUCKET_NAME, Key=key)
                 duration = response["ContentLength"]
                 self.duration = duration
-            except Exception as e:
-                print(e)
+            except:
+                print("Error getting duration of audio file")
 
         super().save(*args, **kwargs)
 
