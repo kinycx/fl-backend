@@ -1,13 +1,16 @@
 import os
 import uuid
 import boto3
+import tempfile
+import requests
 from datetime import datetime
 from django.db import models
 from rest_framework import serializers
 from django.conf import settings
-
+from mutagen.mp3 import MP3
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
+
 
 audio_upload_folder = "MP3_PODCAST/"
 cover_upload_folder = "podcast_covers/"
@@ -53,10 +56,21 @@ class Podcast(models.Model):
             self.insert_time = datetime.now().time()
         if self.audio_url:
             try:
-                key = self.audio_url.split("amazonaws.com/")[-1]
-                response = s3.head_object(Bucket=BUCKET_NAME, Key=key)
-                duration = response["ContentLength"]
-                self.duration = duration
+                # Download the file and save it to a temporary file
+                response = requests.get(self.audio_url)
+                temp_file = tempfile.NamedTemporaryFile(delete=False)
+                temp_file.write(response.content)
+                temp_file.close()
+
+                # Use mutagen to get the duration of the MP3 file
+                audio = MP3(temp_file.name)
+                print(audio.info.length)
+                dur = audio.info.length
+
+                # Remember to clean up the temporary file when you're done with it
+                os.remove(temp_file.name)
+
+                self.duration = dur
             except:
                 print("Error getting duration of audio file")
 
