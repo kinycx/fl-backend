@@ -41,8 +41,8 @@ class Podcast(models.Model):
         upload_to=cover_upload_folder, null=True, blank=True, max_length=500
     )
     cover_url = models.URLField(max_length=500, null=True, blank=True)
-    insert_time = models.TimeField(null=True)
-    update_time = models.TimeField(auto_now=True)
+    insert_time = models.DateTimeField(null=True)
+    update_time = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(
         PodcastCollection, on_delete=models.CASCADE, null=True, blank=True
     )
