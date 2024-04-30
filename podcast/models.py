@@ -51,18 +51,33 @@ class Podcast(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial_values = {
+            field.name: getattr(self, field.name) for field in self._meta.get_fields()
+        }
+
+    @property
+    def changed_fields(self):
+        return {
+            field.name: getattr(self, field.name)
+            for field in self._meta.get_fields()
+            if getattr(self, field.name) != self.initial_values[field.name]
+        }
+
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
         sf = "~()*!.'%"  # safe characters, including %
 
-        if self.audio_file:
+        if "audio_file" in self.changed_fields:
             filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
             key = f"{audio_upload_folder}{filename}"
             self.audio_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
-        if self.cover_file:
+        if "cover_file" in self.changed_fields:
             filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
             key = f"{cover_upload_folder}{filename}"
             self.cover_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
+
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
         if self.audio_url:
