@@ -53,13 +53,15 @@ class Podcast(models.Model):
 
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
-        sf = "~()*!.'"  # safe characters
+        sf = "~()*!.'%"  # safe characters, including %
 
         if self.audio_file:
-            key = f"{audio_upload_folder}{quote(self.audio_file.name, safe=sf)}"
+            filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
+            key = f"{audio_upload_folder}{filename}"
             self.audio_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
         if self.cover_file:
-            key = f"{cover_upload_folder}{quote(self.cover_file.name, safe=sf)}"
+            filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
+            key = f"{cover_upload_folder}{filename}"
             self.cover_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
