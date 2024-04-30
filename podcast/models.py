@@ -3,6 +3,7 @@ import uuid
 import boto3
 import tempfile
 import requests
+from urllib.parse import quote
 from datetime import datetime
 from django.db import models
 from rest_framework import serializers
@@ -32,10 +33,14 @@ class Podcast(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     duration = models.IntegerField(null=True, blank=True)
-    audio_file = models.FileField(upload_to=audio_upload_folder, null=True, blank=True)
+    audio_file = models.FileField(
+        upload_to=audio_upload_folder, null=True, blank=True, max_length=500
+    )
     audio_url = models.URLField(max_length=500, null=True, blank=True)
-    cover_file = models.ImageField(upload_to=cover_upload_folder, null=True, blank=True)
-    cover_url = models.URLField(null=True, blank=True)
+    cover_file = models.ImageField(
+        upload_to=cover_upload_folder, null=True, blank=True, max_length=500
+    )
+    cover_url = models.URLField(max_length=500, null=True, blank=True)
     insert_time = models.TimeField(null=True)
     update_time = models.TimeField(auto_now=True)
     collection = models.ForeignKey(
@@ -48,10 +53,14 @@ class Podcast(models.Model):
 
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
+        sf = "~()*!.'"  # safe characters
+
         if self.audio_file:
-            self.audio_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{audio_upload_folder}{self.audio_file.name.replace(' ', '_')}"
+            key = f"{audio_upload_folder}{quote(self.audio_file.name, safe=sf)}"
+            self.audio_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
         if self.cover_file:
-            self.cover_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/{cover_upload_folder}{self.cover_file.name.replace(' ', '_')}"
+            key = f"{cover_upload_folder}{quote(self.cover_file.name, safe=sf)}"
+            self.cover_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
         if self.audio_url:
@@ -64,13 +73,9 @@ class Podcast(models.Model):
 
                 # Use mutagen to get the duration of the MP3 file
                 audio = MP3(temp_file.name)
-                print(audio.info.length)
-                dur = audio.info.length
-
-                # Remember to clean up the temporary file when you're done with it
                 os.remove(temp_file.name)
 
-                self.duration = dur
+                self.duration = audio.info.length
             except:
                 print("Error getting duration of audio file")
 
