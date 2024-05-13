@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "podcast.apps.PodcastConfig",
     "podcaster.apps.PodcasterConfig",
     "podcast_collection.apps.PodcastCollectionConfig",
+    "corsheaders",
 ]
 
 # settings.py
@@ -72,6 +73,7 @@ AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
