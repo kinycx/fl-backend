@@ -6,9 +6,12 @@ from django.utils.feedgenerator import Rss201rev2Feed
 
 from podcast.models import Podcast
 
+PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 150))
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
+
+HOST_BASE_URL = os.getenv("PROD_HOST")
 email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
@@ -28,6 +31,11 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
             "xmlns:atom": "http://www.w3.org/2005/Atom",
         }
+
+    def add_item_elements(self, handler, item):
+        super().add_item_elements(handler, item)
+        handler.startElement("itunes:image", {"href": item["enclosure_cover"]})
+        handler.endElement("itunes:image")
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
@@ -65,7 +73,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
     title = "Podcast Radio Frequenza Libera"
-    link = "https://fl-backend.replit.app/feed/rss/"  # Change this line
+    link = f"https:{HOST_BASE_URL}/feed/rss/"  # Change this line
     description = "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, " \
             "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora " \
             "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle " \
@@ -77,7 +85,7 @@ class PodcastFeed(Feed):
     language = "it"
 
     def items(self):
-        return Podcast.objects.all().order_by("-insert_time")
+        return Podcast.objects.all().order_by("-insert_time")[:PODCAST_LIMIT]
 
     def item_title(self, item):
         return item.title
@@ -92,9 +100,7 @@ class PodcastFeed(Feed):
         return item.audio_url
 
     def item_enclosure_length(self, item):
-        key = item.audio_url.split("amazonaws.com/")[-1]
-        response = s3.head_object(Bucket=BUCKET_NAME, Key=key)
-        return response["ContentLength"]
+        return item.duration
 
     def item_enclosure_mime_type(self, item):
         return "audio/mpeg"
@@ -110,5 +116,7 @@ class PodcastFeed(Feed):
 
     def item_pubdate(self, item):
         # Combine the current date with the time
-        dt = datetime.combine(date.today(), item.insert_time)
-        return dt
+        return item.insert_time
+
+    def item_extra_kwargs(self, item):
+        return {"enclosure_cover": self.item_enclosure_cover(item)}
