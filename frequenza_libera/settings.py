@@ -49,6 +49,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",  # <-- Move this line to the top
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     "podcast.apps.PodcastConfig",
     "podcaster.apps.PodcasterConfig",
     "podcast_collection.apps.PodcastCollectionConfig",
-    "corsheaders",
 ]
 
 # settings.py
@@ -70,7 +70,9 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
 AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",  # <-- Move this line to the top
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -79,7 +81,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 ROOT_URLCONF = "frequenza_libera.urls"
 
 TEMPLATES = [
