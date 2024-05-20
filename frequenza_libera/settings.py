@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "podcast.apps.PodcastConfig",
     "podcaster.apps.PodcasterConfig",
     "podcast_collection.apps.PodcastCollectionConfig",
+    "corsheaders",
 ]
 
 # settings.py
