@@ -1,14 +1,13 @@
 import os
 import uuid
 import boto3
-import tempfile
-import requests
+# import tempfile
+# import requests
 from urllib.parse import quote
 from datetime import datetime
 from django.db import models
 from rest_framework import serializers
-from django.conf import settings
-from mutagen.mp3 import MP3
+# from mutagen.mp3 import MP3
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
 
@@ -57,6 +56,9 @@ class Podcast(models.Model):
             field.name: getattr(self, field.name) for field in self._meta.get_fields()
         }
 
+    def __str__(self):
+        return self.title
+
     @property
     def changed_fields(self):
         return {
@@ -80,21 +82,21 @@ class Podcast(models.Model):
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
-        if self.audio_url:
-            try:
-                # Download the file and save it to a temporary file
-                response = requests.get(self.audio_url)
-                temp_file = tempfile.NamedTemporaryFile(delete=False)
-                temp_file.write(response.content)
-                temp_file.close()
+        # if self.audio_url:
+        #     try:
+        #         # Download the file and save it to a temporary file
+        #         response = requests.get(self.audio_url)
+        #         temp_file = tempfile.NamedTemporaryFile(delete=False)
+        #         temp_file.write(response.content)
+        #         temp_file.close()
 
-                # Use mutagen to get the duration of the MP3 file
-                audio = MP3(temp_file.name)
-                os.remove(temp_file.name)
+        #         # Use mutagen to get the duration of the MP3 file
+        #         audio = MP3(temp_file.name)
+        #         os.remove(temp_file.name)
 
-                self.duration = audio.info.length
-            except:
-                print("Error getting duration of audio file")
+        #         self.duration = audio.info.length
+        #     except:
+        #         print("Error getting duration of audio file")
 
         super().save(*args, **kwargs)
 
