@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from services.feed import PodcastFeed
 
+admin.site.site_header = "Sei l'admin di Frequenza Libera cazzo, complimenti"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
