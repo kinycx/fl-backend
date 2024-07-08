@@ -8,7 +8,6 @@ from .models import Podcaster
 class PodcasterAdmin(admin.ModelAdmin):
     list_display = ("name", "presentation")
     search_fields = ("name", "presentation")
-    list_filter = ("name", "presentation")
 
 
 admin.site.register(Podcaster, PodcasterAdmin)
