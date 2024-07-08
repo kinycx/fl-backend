@@ -10,5 +10,7 @@ class Podcaster(models.Model):
     image = models.ImageField(upload_to="images/Podcasters", null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
 
+    search_fields = ["name"]
+
     def __unicode__(self):
         return self.name

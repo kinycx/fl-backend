@@ -11,6 +11,8 @@ class PodcastCollection(models.Model):
     update_time = models.TimeField(auto_now=True)
     cover = models.ImageField(upload_to="images/Collection", null=True, blank=True)
 
+    search_fields = ["title"]
+
     def __unicode__(self):
         return self.title
 
