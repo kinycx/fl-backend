@@ -47,6 +47,8 @@ class Podcast(models.Model):
     )
     podcasters = models.ManyToManyField(Podcaster, blank=True)
 
+    search_fields = ["title"]
+
     def __unicode__(self):
         return self.title
 
