@@ -11,4 +11,4 @@ class PodcasterAdmin(admin.ModelAdmin):
     list_filter = ("name", "presentation")
 
 
-admin.site.register(Podcaster)
+admin.site.register(Podcaster, PodcasterAdmin)
