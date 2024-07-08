@@ -1,12 +1,14 @@
 import os
 import uuid
 import boto3
+
 # import tempfile
 # import requests
 from urllib.parse import quote
 from datetime import datetime
 from django.db import models
 from rest_framework import serializers
+
 # from mutagen.mp3 import MP3
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
@@ -26,6 +28,8 @@ s3 = boto3.client(
     aws_secret_access_key=AWS_SECRET_KEY,
     region_name="eu-north-1",
 )
+
+
 # Create your models here.
 class Podcast(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -46,8 +50,6 @@ class Podcast(models.Model):
         PodcastCollection, on_delete=models.CASCADE, null=True, blank=True
     )
     podcasters = models.ManyToManyField(Podcaster, blank=True)
-
-    search_fields = ["title"]
 
     def __unicode__(self):
         return self.title
