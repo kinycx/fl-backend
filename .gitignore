@@ -73,3 +73,5 @@ pyspark_deps.tar.gz
 /spark/emr-pack-test/load_satellite_data_bundled.py
 
 postgres-data/
+/old/audio/*
+/old/cover_image/*

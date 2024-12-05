@@ -47,7 +47,7 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
 1. Start the database using Docker Compose:
 
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
 2. Apply the database migrations:
