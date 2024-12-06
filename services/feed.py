@@ -11,7 +11,6 @@ AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 
-HOST_BASE_URL = os.getenv("PROD_HOST")
 email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
@@ -73,7 +72,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
     title = "Podcast Radio Frequenza Libera"
-    link = f"https:{HOST_BASE_URL}/feed/rss/"  # Change this line
+    link = "https://www.frequenzalibera.it"  # Change this line
     description = "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, " \
             "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora " \
             "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle " \
