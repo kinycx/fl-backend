@@ -35,7 +35,7 @@ s3 = boto3.client(
 class Podcast(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=200, unique=True)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, unique=True)
     duration = models.IntegerField(null=True, blank=True)
     audio_file = models.FileField(
         upload_to=audio_upload_folder, null=True, blank=True, max_length=500
@@ -74,8 +74,8 @@ class Podcast(models.Model):
 
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
-        sf = "~()*!.'%"  # safe characters, including %
-
+        sf = "/~"  # safe characters, including %
+        self.title = html.unescape(self.title)
         self.description = html.unescape(self.description)
 
         if "audio_file" in self.changed_fields:

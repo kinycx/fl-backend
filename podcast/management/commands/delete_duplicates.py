@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Find all unique titles
-        unique_titles = set()
+        unique_description = set()
         duplicates = []
 
         for podcast in Podcast.objects.all():
@@ -21,10 +21,10 @@ class Command(BaseCommand):
                 )
                 podcast.save()
 
-            if podcast.title in unique_titles:
+            if podcast.description in unique_description:
                 duplicates.append(podcast.id)
             else:
-                unique_titles.add(podcast.title)
+                unique_description.add(podcast.description)
 
         # Delete duplicates
         if duplicates:
