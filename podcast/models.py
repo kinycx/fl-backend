@@ -1,6 +1,7 @@
 import os
 import uuid
 import boto3
+import html
 
 # import tempfile
 # import requests
@@ -33,7 +34,7 @@ s3 = boto3.client(
 # Create your models here.
 class Podcast(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField(null=True, blank=True)
     duration = models.IntegerField(null=True, blank=True)
     audio_file = models.FileField(
@@ -75,6 +76,8 @@ class Podcast(models.Model):
     def save(self, *args, **kwargs):
         sf = "~()*!.'%"  # safe characters, including %
 
+        self.description = html.unescape(self.description)
+
         if "audio_file" in self.changed_fields:
             filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
             key = f"{audio_upload_folder}{filename}"
@@ -86,6 +89,7 @@ class Podcast(models.Model):
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
+
         # if self.audio_url:
         #     try:
         #         # Download the file and save it to a temporary file
