@@ -28,7 +28,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # False if not in os.environ because of casting above
 # Correctly cast DEBUG to a boolean
-DEBUG = env.bool("DEBUG", default=True)
+DEBUG: bool = env.bool("DEBUG", default=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
