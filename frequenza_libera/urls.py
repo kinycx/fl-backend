@@ -16,11 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from services.feed import PodcastFeed
 
 admin.site.site_header = "Sei l'admin di Frequenza Libera cazzo, complimenti"
 
+
+def redirect_to_admin(request):
+    return redirect("admin:index")
+
+
 urlpatterns = [
+    path("", redirect_to_admin),
     path("admin/", admin.site.urls),
     path("podcast/", include("podcast.urls")),
     path("feed/rss/xml/", PodcastFeed(), name="podcast_feed"),
