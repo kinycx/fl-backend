@@ -1,10 +1,14 @@
 import os
 import boto3
 import json
+import re
+import html
+
 from botocore.exceptions import ClientError
 from podcast.models import Podcast
 from django.core.management.base import BaseCommand
 from datetime import datetime, timezone
+from django.db.utils import IntegrityError
 
 # Access environment variables
 aws_access_key_id = os.getenv("AWS_ACCESS_KEY")
@@ -77,13 +81,34 @@ class Command(BaseCommand):
                 print(f"File {audio_url} does not exist in S3")
                 continue
 
-            Podcast.objects.create(
-                title=item["title"],
-                description=item["description"],
-                insert_time=published_date,
-                audio_url=audio_url,
-                cover_url=cover_url,
+            title = re.sub(r"\s+", " ", html.unescape(item["title"]).strip())
+            description = re.sub(
+                r"\s+", " ", html.unescape(item["description"]).strip()
             )
-            self.stdout.write(
-                self.style.SUCCESS(f"Successfully added {item['title']} to podcasts")
-            )
+
+            # Check if a podcast with the same title already exists
+            if Podcast.objects.filter(title=title).exists():
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Podcast with title '{title}' already exists. Skipping."
+                    )
+                )
+                continue
+
+            try:
+                Podcast.objects.create(
+                    title=title,
+                    description=description,
+                    insert_time=published_date,
+                    audio_url=audio_url,
+                    cover_url=cover_url,
+                )
+                self.stdout.write(
+                    self.style.SUCCESS(f"Successfully added {title} to podcasts")
+                )
+            except IntegrityError as e:
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Failed to add {title} due to IntegrityError: {e}"
+                    )
+                )
