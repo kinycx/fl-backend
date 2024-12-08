@@ -25,7 +25,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 DEBUG = env.bool("DEBUG", default=False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="your-production-secret-key")
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
@@ -96,8 +96,6 @@ WSGI_APPLICATION = "frequenza_libera.wsgi.application"
 # ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
 ALLOWED_HOSTS = ["testserver", env("PROD_HOST"), "localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = [f"https://{env('PROD_HOST')}"]
-# To allow all origins:
-CORS_ALLOW_ALL_ORIGINS = True
 
 # Or to allow specific origins:
 # CORS_ALLOWED_ORIGINS = [
