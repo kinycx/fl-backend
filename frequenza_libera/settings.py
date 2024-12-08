@@ -35,6 +35,20 @@ DEBUG: bool = env.bool("DEBUG", default=True)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-(rq_6h^^(q+=l3(oekb!@$+)-$!*x#v07r4ity#1ydaju&mj7q"
 
+# settings.py
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = "/static/"
+
+# Ensure STATIC_ROOT is set for production
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
