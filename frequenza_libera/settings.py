@@ -11,13 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 import environ
-
 from pathlib import Path
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, True)
-)
+env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,24 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-
 # False if not in os.environ because of casting above
-# Correctly cast DEBUG to a boolean
-DEBUG: bool = env.bool("DEBUG", default=True)
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+DEBUG = env.bool("DEBUG", default=False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(rq_6h^^(q+=l3(oekb!@$+)-$!*x#v07r4ity#1ydaju&mj7q"
+SECRET_KEY = env("SECRET_KEY", default="your-production-secret-key")
 
-# settings.py
+# Set allowed hosts for production
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = "/static/"
-
-# Ensure STATIC_ROOT is set for production
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Additional locations of static files
@@ -50,20 +39,13 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
-# To allow all origins:
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
-# Or to allow specific origins:
-# CORS_ALLOWED_ORIGINS = [
-#     "https://example.com",
-#     "https://sub.example.com",
-# ]
 # Application definition
-
 INSTALLED_APPS = [
-    "corsheaders",  # <-- Move this line to the top
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -75,18 +57,15 @@ INSTALLED_APPS = [
     "podcast_collection.apps.PodcastCollectionConfig",
 ]
 
-# settings.py
-
 DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
 
 AWS_REGION = "eu-north-1"
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
-AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
-
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
+AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # <-- Move this line to the top
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -95,6 +74,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 ROOT_URLCONF = "frequenza_libera.urls"
 
 TEMPLATES = [
@@ -116,24 +96,20 @@ TEMPLATES = [
 WSGI_APPLICATION = "frequenza_libera.wsgi.application"
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("PGDATABASE"),
-        "USER": os.getenv("PGUSER"),
-        "PASSWORD": os.getenv("PGPASSWORD"),
-        "HOST": os.getenv("PGHOST"),
-        "PORT": os.getenv("PGPORT"),
+        "NAME": env("PGDATABASE"),
+        "USER": env("PGUSER"),
+        "PASSWORD": env("PGPASSWORD"),
+        "HOST": env("PGHOST"),
+        "PORT": env("PGPORT"),
     }
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -150,22 +126,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = "static/"
+# Security settings
+SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)
+CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
