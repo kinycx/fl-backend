@@ -37,7 +37,7 @@ STATICFILES_DIRS = [
 ]
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
 # Application definition
@@ -93,9 +93,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "frequenza_libera.wsgi.application"
 
 # Set allowed hosts for production
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
-ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
+ALLOWED_HOSTS = ["testserver", env("PROD_HOST"), "localhost", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = [f"https://{env('PROD_HOST')}"]
 # To allow all origins:
 CORS_ALLOW_ALL_ORIGINS = True
 
