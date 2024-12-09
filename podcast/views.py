@@ -12,6 +12,7 @@ from rest_framework.generics import (
 
 from logger import logger
 from .models import Podcast, PodcastSerializer
+from .pagination import PodcastPagination
 
 from frequenza_libera.settings import BASE_DIR
 
@@ -21,7 +22,7 @@ class PodcastListCreateView(ListCreateAPIView):
 
     queryset = Podcast.objects.all()
     serializer_class = PodcastSerializer
-
+    pagination_class = PodcastPagination
 
 class PodcastRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     """View for retrieving, updating and deleting Podcasts (GET, PUT, DELETE)"""
