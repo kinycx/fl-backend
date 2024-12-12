@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # False if not in os.environ because of casting above
-DEBUG = env.bool("DEBUG", default=False)
+DEBUG: bool = env.bool("DEBUG", default=False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("DJANGO_SECRET_KEY")

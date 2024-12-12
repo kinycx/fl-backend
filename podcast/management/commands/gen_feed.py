@@ -3,6 +3,9 @@ from django.test.client import Client
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = "Save RSS feed to S3"
@@ -11,6 +14,16 @@ class Command(BaseCommand):
         # Generate the feed
         client = Client()
         response = client.get("/feed/rss/xml/")  # Replace with your feed URL
+
+        # Check the response status code
+        if response.status_code != 200:
+            self.stdout.write(
+                self.style.ERROR(f"Failed to fetch feed: {response.status_code}")
+            )
+            return
+
+        # Log the response content
+        logger.debug(response.content)
 
         # Delete the existing feed file if it exists
         file_name = "feed.xml"
