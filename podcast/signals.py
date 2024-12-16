@@ -1,4 +1,3 @@
-import environ
 import logging
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -15,6 +14,6 @@ logger = logging.getLogger(__name__)
 def update_feed(sender, **kwargs):
     logger.info(f"DEBUG value is: {settings.DEBUG}")
 
-    # if not settings.DEBUG:
-    logger.info("Generating feed...")
-    call_command("gen_feed")
+    if not settings.DEBUG:
+        logger.info("Generating feed...")
+        call_command("gen_feed")
