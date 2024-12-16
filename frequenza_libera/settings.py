@@ -32,14 +32,6 @@ AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
 AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
 
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
@@ -68,7 +60,21 @@ INSTALLED_APPS = [
     "podcast_collection.apps.PodcastCollectionConfig",
 ]
 
-DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django_s3_storage.storage.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

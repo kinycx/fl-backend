@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from logger import logger
-from ..models.podcast import Podcast
+from .models import Podcast
 
 
 class PodcastAPITest(TestCase):
