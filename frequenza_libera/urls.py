@@ -30,7 +30,7 @@ urlpatterns = [
     path("", redirect_to_admin),
     path("admin/", admin.site.urls),
     path("podcast/", include("podcast.urls")),
-    path("feed/rss/xml/", PodcastFeed(), name="podcast_feed"),
+    # path("feed/rss/xml/", PodcastFeed(), name="podcast_feed"),
     # path("podcaster/", include("podcaster.urls")),
     # path("podcast_collection/", include("podcast_collection.urls")),
 ]

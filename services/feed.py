@@ -6,7 +6,7 @@ from django.utils.feedgenerator import Rss201rev2Feed
 
 from podcast.models import Podcast
 
-PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 150))
+PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 500))
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 BUCKET_NAME = os.getenv("BUCKET_NAME")

@@ -27,6 +27,12 @@ DEBUG: bool = env.bool("DEBUG", default=False)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
+AWS_REGION = "eu-north-1"
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
+AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
+
+
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
@@ -63,11 +69,6 @@ INSTALLED_APPS = [
 ]
 
 DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
-
-AWS_REGION = "eu-north-1"
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
-AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
