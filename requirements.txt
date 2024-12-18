@@ -15,8 +15,8 @@ jmespath==1.0.1
 lxml==5.1.0
 mutagen==1.47.0
 packaging==24.2
-Pillow==10.0.0
-psycopg2-binary==2.9.6
+Pillow==11.0.0
+psycopg2-binary==2.9.10
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2023.3.post1
