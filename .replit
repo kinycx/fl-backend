@@ -13,7 +13,7 @@ requiredFiles = [".replit", "replit.nix"]
 [deployment]
 run = [
   "sh", "-c", 
-  "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000 --workers 1 --worker-class sync --timeout 300 --max-requests 1200 --max-requests-jitter 100"
+  "python3 manage.py collectstatic --noinput && gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000 --workers 1 --worker-class sync --timeout 300 --log-level debug"
 ]
 
 deploymentTarget = "cloudrun"
