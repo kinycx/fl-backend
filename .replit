@@ -11,11 +11,9 @@ language = "python3"
 requiredFiles = [".replit", "replit.nix"]
 
 [deployment]
-run = [
-  "sh", "-c",
-  "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000"
-]
+run = ["sh", "-c", "gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000"]
 deploymentTarget = "cloudrun"
+build = ["sh", "-c", "python -m pip install -r requirements.txt"]
 
 [[ports]]
 localPort = 3000
