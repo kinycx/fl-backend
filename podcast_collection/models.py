@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.postgres import fields
+from rest_framework import serializers
 
 
 class PodcastCollection(models.Model):
@@ -16,3 +17,9 @@ class PodcastCollection(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PodcastCollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PodcastCollection
+        fields = "__all__"

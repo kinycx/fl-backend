@@ -29,4 +29,5 @@ urlpatterns = [
     path("", redirect_to_admin),
     path("admin/", admin.site.urls),
     path("podcast/", include("podcast.urls")),
+    path("podcast-collection/", include("podcast_collection.urls")),
 ]
