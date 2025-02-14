@@ -11,12 +11,10 @@ language = "python3"
 requiredFiles = [".replit", "replit.nix"]
 
 [deployment]
-build = ["sh", "-c", "python manage.py collectstatic --noinput"]
 run = [
-  "sh", "-c", 
-  "gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000 --workers 1 --worker-class sync --timeout 300 --log-level debug"
+  "sh", "-c",
+  "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000"
 ]
-
 deploymentTarget = "cloudrun"
 
 [[ports]]
