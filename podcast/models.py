@@ -10,7 +10,6 @@ from datetime import datetime
 from django.db import models
 from rest_framework import serializers
 
-# from mutagen.mp3 import MP3
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
 
@@ -89,22 +88,6 @@ class Podcast(models.Model):
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
-
-        # if self.audio_url:
-        #     try:
-        #         # Download the file and save it to a temporary file
-        #         response = requests.get(self.audio_url)
-        #         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        #         temp_file.write(response.content)
-        #         temp_file.close()
-
-        #         # Use mutagen to get the duration of the MP3 file
-        #         audio = MP3(temp_file.name)
-        #         os.remove(temp_file.name)
-
-        #         self.duration = audio.info.length
-        #     except:
-        #         print("Error getting duration of audio file")
 
         super().save(*args, **kwargs)
 
