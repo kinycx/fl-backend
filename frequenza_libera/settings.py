@@ -28,7 +28,7 @@ AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS: bool = os.getenv("CORS_ALLOW_ALL_ORIGINS", default=False) == "True"
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", default=["*"]).split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", default="*").split(",")
 # Set allowed hosts for production
 # ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
 ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
