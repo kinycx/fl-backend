@@ -12,34 +12,27 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # False if not in os.environ because of casting above
-DEBUG: bool = os.getenv("DEBUG", "False") == "True"
+DEBUG: bool = os.getenv("DEBUG", default="False") == "True"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-AWS_REGION = os.getenv("AWS_REGION","eu-north-1")
+AWS_REGION = os.getenv("AWS_REGION", default="eu-north-1")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
 AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS: bool = os.getenv("CORS_ALLOW_ALL_ORIGINS", default=False) == "True"
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", default="").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", default=[]).split(",")
 # Set allowed hosts for production
 # ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
 ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
-
-# Or to allow specific origins:
-# CORS_ALLOWED_ORIGINS = [
-#     "https://example.com",
-#     "https://sub.example.com",
-# ]
 
 # Application definition
 INSTALLED_APPS = [
