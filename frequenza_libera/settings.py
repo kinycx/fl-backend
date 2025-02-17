@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import environ
 import os
+import dj_database_url
 
 env = environ.Env(
     # set casting, default value
@@ -112,21 +113,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "frequenza_libera.wsgi.application"
 
+postgres_dict_config = {
+    "ENGINE": "django.db.backends.postgresql",
+    "NAME": env("PGDATABASE"),
+    "USER": env("PGUSER"),
+    "PASSWORD": env("PGPASSWORD"),
+    "HOST": env("PGHOST"),
+    "PORT": env("PGPORT"),
+    "CONN_HEALTH_CHECKS": True,
+    "OPTIONS": {
+        "sslmode": "require"
+    }
+}
+
 # Database
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("PGDATABASE"),
-        "USER": env("PGUSER"),
-        "PASSWORD": env("PGPASSWORD"),
-        "HOST": env("PGHOST"),
-        "PORT": env("PGPORT"),
-        "CONN_HEALTH_CHECKS": True,
-        "OPTIONS": {
-            "sslmode": "require",
-            "server_side_binding": True,
-        },
-    }
+    "default": dj_database_url.config(default=env("DATABASE_URL"))
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
