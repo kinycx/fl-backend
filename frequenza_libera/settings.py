@@ -121,7 +121,11 @@ DATABASES = {
         "PASSWORD": env("PGPASSWORD"),
         "HOST": env("PGHOST"),
         "PORT": env("PGPORT"),
-        "OPTIONS": {"sslmode": "require"},
+        "CONN_HEALTH_CHECKS": True,
+        "OPTIONS": {
+            "sslmode": "require",
+            "server_side_binding": True,
+        },
     }
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
