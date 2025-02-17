@@ -22,8 +22,8 @@ s3_client = boto3.client(
 # Path to the audio and cover image folders
 local_audio_path = "audio"
 local_cover_path = "cover_image"
-audio_upload_folder = "MP3_PODCAST/"
-cover_upload_folder = "podcast_covers/"
+AUDIO_UPLOAD_FOLDER = "MP3_PODCAST/"
+COVER_UPLOAD_FOLDER = "podcast_covers/"
 
 # Load the JSON data
 with open("feed.json", "r", encoding="utf-8") as json_file:
@@ -51,7 +51,7 @@ for index, item in enumerate(data["items"]):
         if "guid" in item and item["guid"]:
             audio_filename = os.path.basename(item["guid"])
             local_audio_filepath = os.path.join(local_audio_path, audio_filename)
-            s3_key = f"{audio_upload_folder}{audio_filename}"
+            s3_key = f"{AUDIO_UPLOAD_FOLDER}{audio_filename}"
             if file_exists_in_s3(aws_bucket_name, s3_key):
                 print(f"File {s3_key} already exists in S3, overwriting...")
             s3_client.upload_file(local_audio_filepath, aws_bucket_name, s3_key)
@@ -60,7 +60,7 @@ for index, item in enumerate(data["items"]):
         if "image" in item and item["image"]:
             image_filename = os.path.basename(item["image"])
             local_image_filepath = os.path.join(local_cover_path, image_filename)
-            s3_key = f"{cover_upload_folder}{image_filename}"
+            s3_key = f"{COVER_UPLOAD_FOLDER}{image_filename}"
             if file_exists_in_s3(aws_bucket_name, s3_key):
                 print(f"File {s3_key} already exists in S3, overwriting...")
             s3_client.upload_file(local_image_filepath, aws_bucket_name, s3_key)

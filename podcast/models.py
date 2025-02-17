@@ -29,11 +29,11 @@ class Podcast(models.Model):
     description = models.TextField(null=True, blank=True, unique=True)
     duration = models.IntegerField(null=True, blank=True)
     audio_file = models.FileField(
-        upload_to=settings.audio_upload_folder, null=True, blank=True, max_length=500
+        upload_to=settings.AUDIO_UPLOAD_FOLDER, null=True, blank=True, max_length=500
     )
     audio_url = models.URLField(max_length=500, null=True, blank=True)
     cover_file = models.ImageField(
-        upload_to=settings.cover_upload_folder, null=True, blank=True, max_length=500
+        upload_to=settings.COVER_UPLOAD_FOLDER, null=True, blank=True, max_length=500
     )
     cover_url = models.URLField(max_length=500, null=True, blank=True)
     insert_time = models.DateTimeField(null=True)
@@ -71,11 +71,11 @@ class Podcast(models.Model):
 
         if "audio_file" in self.changed_fields:
             filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
-            key = f"{settings.audio_upload_folder}{filename}"
+            key = f"{settings.AUDIO_UPLOAD_FOLDER}{filename}"
             self.audio_url = f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{key}"
         if "cover_file" in self.changed_fields:
             filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
-            key = f"{settings.cover_upload_folder}{filename}"
+            key = f"{settings.COVER_UPLOAD_FOLDER}{filename}"
             self.cover_url = f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{key}"
 
         if self.insert_time is None:

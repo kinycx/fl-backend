@@ -64,13 +64,13 @@ class Command(BaseCommand):
             if published_date and published_date > cutoff_date:
                 continue
 
-            audio_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.audio_upload_folder}{os.path.basename(item['guid'])}"
-            cover_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.cover_upload_folder}{os.path.basename(item['image'])}"
+            audio_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.AUDIO_UPLOAD_FOLDER}{os.path.basename(item['guid'])}"
+            cover_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.COVER_UPLOAD_FOLDER}{os.path.basename(item['image'])}"
 
             # Check if the audio and cover files exist in S3
             if not self.file_exists_in_s3(
                 settings.BUCKET_NAME,
-                f"{settings.audio_upload_folder}{os.path.basename(item['guid'])}",
+                f"{settings.AUDIO_UPLOAD_FOLDER}{os.path.basename(item['guid'])}",
             ):
                 print(f"File {audio_url} does not exist in S3")
                 continue

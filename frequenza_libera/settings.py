@@ -36,7 +36,12 @@ AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS: bool = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
-CORS_ALLOWED_ORIGINS: list[str] = env.list("CORS_ALLOWED_ORIGINS", default=["*"])
+
+if not CORS_ALLOW_ALL_ORIGINS:
+    CORS_ALLOWED_ORIGINS: list[str] = env.list("CORS_ALLOWED_ORIGINS", default=["https://example.com"])
+else:
+    CORS_ALLOWED_ORIGINS = []
+    
 # Set allowed hosts for production
 # ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
 ALLOWED_HOSTS = ["testserver", env("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
@@ -150,8 +155,8 @@ CSRF_COOKIE_SECURE: bool = env.bool("CSRF_COOKIE_SECURE", default=True)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Project settings
-audio_upload_folder = "MP3_PODCAST/"
-cover_upload_folder = "podcast_covers/"
+AUDIO_UPLOAD_FOLDER = "MP3_PODCAST/"
+COVER_UPLOAD_FOLDER = "podcast_covers/"
 
 AWS_ACCESS_KEY = env("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = env("AWS_SECRET_KEY")
