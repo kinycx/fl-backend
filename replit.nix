@@ -21,5 +21,6 @@
     pkgs.python3Packages.psycopg
     pkgs.gcc
     pkgs.pkg-config
+    pkgs.xcodebuild
   ];
 }
