@@ -1,4 +1,4 @@
-modules = ["python-base-3.13"]
+modules = ["python-3.10:v18-20230807-322e88b"]
 run = "python3 manage.py runserver 0.0.0.0:3000"
 
 [nix]
