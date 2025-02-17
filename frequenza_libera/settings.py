@@ -10,35 +10,30 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
-import environ
 from pathlib import Path
 
-env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
 # False if not in os.environ because of casting above
-DEBUG: bool = env.bool("DEBUG", default=False)
+DEBUG: bool = os.getenv("DEBUG", "False") == "True"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-AWS_REGION = "eu-north-1"
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
-AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
+AWS_REGION = os.getenv("AWS_REGION","eu-north-1")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_KEY")
+AWS_S3_BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
-CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOW_ALL_ORIGINS: bool = os.getenv("CORS_ALLOW_ALL_ORIGINS", default=False) == "True"
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", default="").split(",")
 # Set allowed hosts for production
 # ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
-ALLOWED_HOSTS = ["testserver", env("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
-CSRF_TRUSTED_ORIGINS = [f"https://{env('PROD_HOST')}"]
+ALLOWED_HOSTS = ["testserver", os.getenv("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
+CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('PROD_HOST')}"]
 
 # Or to allow specific origins:
 # CORS_ALLOWED_ORIGINS = [
@@ -112,11 +107,11 @@ WSGI_APPLICATION = "frequenza_libera.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("PGDATABASE"),
-        "USER": env("PGUSER"),
-        "PASSWORD": env("PGPASSWORD"),
-        "HOST": env("PGHOST"),
-        "PORT": env("PGPORT"),
+        "NAME": os.getenv("PGDATABASE"),
+        "USER": os.getenv("PGUSER"),
+        "PASSWORD": os.getenv("PGPASSWORD"),
+        "HOST": os.getenv("PGHOST"),
+        "PORT": os.getenv("PGPORT"),
         "OPTIONS": {"sslmode": "require"},
     }
 }
@@ -146,9 +141,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Security settings
-SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
-SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)
-CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)
+SECURE_SSL_REDIRECT: bool = os.getenv("SECURE_SSL_REDIRECT", default=True) == "True"
+SESSION_COOKIE_SECURE:bool = os.getenv("SESSION_COOKIE_SECURE", default=True) == "True"
+CSRF_COOKIE_SECURE: bool = os.getenv("CSRF_COOKIE_SECURE", default=True) == "True"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
