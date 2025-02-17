@@ -5,22 +5,18 @@ from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 
 from podcast.models import Podcast
-
-PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 500))
-AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
-BUCKET_NAME = os.getenv("BUCKET_NAME")
+from django.conf import settings
 
 email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
     service_name="s3",
-    aws_access_key_id=AWS_ACCESS_KEY,
-    aws_secret_access_key=AWS_SECRET_KEY,
+    aws_access_key_id=settings.AWS_ACCESS_KEY,
+    aws_secret_access_key=settings.AWS_SECRET_KEY,
     region_name="eu-north-1",
 )
 
-bucket_url = f"https://{BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+bucket_url = f"https://{settings.BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
 
 
 class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
@@ -84,7 +80,7 @@ class PodcastFeed(Feed):
     language = "it"
 
     def items(self):
-        return Podcast.objects.all().order_by("-insert_time")[:PODCAST_LIMIT]
+        return Podcast.objects.all().order_by("-insert_time")[:settings.PODCAST_LIMIT]
 
     def item_title(self, item):
         return item.title

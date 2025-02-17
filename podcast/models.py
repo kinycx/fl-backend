@@ -1,4 +1,3 @@
-import os
 import uuid
 import boto3
 import html
@@ -12,20 +11,13 @@ from rest_framework import serializers
 
 from podcast_collection.models import PodcastCollection
 from podcaster.models import Podcaster
-
-
-audio_upload_folder = "MP3_PODCAST/"
-cover_upload_folder = "podcast_covers/"
-
-AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
-BUCKET_NAME = os.getenv("BUCKET_NAME")
+from django.conf import settings
 
 
 s3 = boto3.client(
     service_name="s3",
-    aws_access_key_id=AWS_ACCESS_KEY,
-    aws_secret_access_key=AWS_SECRET_KEY,
+    aws_access_key_id=settings.AWS_ACCESS_KEY,
+    aws_secret_access_key=settings.AWS_SECRET_KEY,
     region_name="eu-north-1",
 )
 
@@ -37,11 +29,11 @@ class Podcast(models.Model):
     description = models.TextField(null=True, blank=True, unique=True)
     duration = models.IntegerField(null=True, blank=True)
     audio_file = models.FileField(
-        upload_to=audio_upload_folder, null=True, blank=True, max_length=500
+        upload_to=settings.audio_upload_folder, null=True, blank=True, max_length=500
     )
     audio_url = models.URLField(max_length=500, null=True, blank=True)
     cover_file = models.ImageField(
-        upload_to=cover_upload_folder, null=True, blank=True, max_length=500
+        upload_to=settings.cover_upload_folder, null=True, blank=True, max_length=500
     )
     cover_url = models.URLField(max_length=500, null=True, blank=True)
     insert_time = models.DateTimeField(null=True)
@@ -79,12 +71,12 @@ class Podcast(models.Model):
 
         if "audio_file" in self.changed_fields:
             filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
-            key = f"{audio_upload_folder}{filename}"
-            self.audio_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
+            key = f"{settings.audio_upload_folder}{filename}"
+            self.audio_url = f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{key}"
         if "cover_file" in self.changed_fields:
             filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
-            key = f"{cover_upload_folder}{filename}"
-            self.cover_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key}"
+            key = f"{settings.cover_upload_folder}{filename}"
+            self.cover_url = f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{key}"
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()

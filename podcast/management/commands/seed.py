@@ -9,20 +9,14 @@ from podcast.models import Podcast
 from django.core.management.base import BaseCommand
 from datetime import datetime, timezone
 from django.db.utils import IntegrityError
-
-# Access environment variables
-aws_access_key_id = os.getenv("AWS_ACCESS_KEY")
-aws_secret_access_key = os.getenv("AWS_SECRET_KEY")
-aws_bucket_name = os.getenv("BUCKET_NAME")
-audio_upload_folder = "MP3_PODCAST/"
-cover_upload_folder = "podcast_covers/"
+from django.conf import settings
 
 class Command(BaseCommand):
     help = "Loads a JSON file to populate the Podcast model. Example usage: python3 manage.py seed --json_file old/feed.json --cutoff 2023 5 12"
     s3_client = boto3.client(
         "s3",
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
+        aws_access_key_id=settings.AWS_ACCESS_KEY,
+        aws_secret_access_key=settings.AWS_SECRET_KEY,
     )
 
     def add_arguments(self, parser):
@@ -70,13 +64,13 @@ class Command(BaseCommand):
             if published_date and published_date > cutoff_date:
                 continue
 
-            audio_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{audio_upload_folder}{os.path.basename(item['guid'])}"
-            cover_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{cover_upload_folder}{os.path.basename(item['image'])}"
+            audio_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.audio_upload_folder}{os.path.basename(item['guid'])}"
+            cover_url = f"https://podcast-fl.s3.eu-north-1.amazonaws.com/{settings.cover_upload_folder}{os.path.basename(item['image'])}"
 
             # Check if the audio and cover files exist in S3
             if not self.file_exists_in_s3(
-                aws_bucket_name,
-                f"{audio_upload_folder}{os.path.basename(item['guid'])}",
+                settings.BUCKET_NAME,
+                f"{settings.audio_upload_folder}{os.path.basename(item['guid'])}",
             ):
                 print(f"File {audio_url} does not exist in S3")
                 continue
