@@ -16,6 +16,8 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
     git clone <repository_url>
     ```
 
+### Using pip and venv
+
 2. Create a virtual environment:
 
     ```bash
@@ -42,6 +44,24 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
     pip install -r requirements.txt
     ```
 
+### Using uv package manager
+
+2. Install the uv package manager:
+
+    ```bash
+    pip install uv
+    ```
+3. Create a uv virtual environment:
+
+    ```bash
+    uv venv
+    ```    
+4. Install the required dependencies:
+
+    ```bash
+    uv pip install -r pyproject.toml
+    ```
+
 ## Database Setup
 
 1. Start the database using Docker Compose:
@@ -55,14 +75,32 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
     ```bash
     python manage.py migrate
     ```
+    or
+    ```bash
+    uv manage.py migrate
+    ```
 
 ## Running the App
 
-1. Start the Django development server:
+1. Collect static files:
+    
+    ```bash
+    python manage.py collectstatic
+    ```
+    or
+    ```bash
+    uv manage.py collectstatic
+    ```
+
+2. Start the Django development server:
 
     ```bash
     python manage.py runserver
     ```
+    or
+    ```bash
+    uv manage.py runserver
+    ```
 
-2. Open your web browser and navigate to `http://localhost:8000` to access the app.
+3. Open your web browser and navigate to `http://localhost:8000` to access the app.
 

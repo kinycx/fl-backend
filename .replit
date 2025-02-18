@@ -1,22 +1,49 @@
-modules = ["python-3.13"]
-run = "python manage.py runserver 0.0.0.0:3000"
+run = [
+    "gunicorn",
+    "frequenza_libera.wsgi:application",
+    "--bind",
+    "0.0.0.0:3000"
+]
+
+packager.language = "python3"
+
+entrypoint = "manage.py"
+modules = ["python-3.10:v18-20230807-322e88b"]
+
+hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-23_11"
 
 [unitTest]
 language = "python3"
 
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix"]
-
 [deployment]
 run = [
-  "sh", "-c",
-  "python manage.py collectstatic --noinput && gunicorn frequenza_libera.wsgi:application --bind 0.0.0.0:3000"
+    "gunicorn",
+    "frequenza_libera.wsgi:application",
+    "--bind",
+    "0.0.0.0:3000"
 ]
 deploymentTarget = "cloudrun"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+
+[workflows]
+runButton = "Migrate and Collect Static Pages"
+
+[[workflows.workflow]]
+name = "Migrate and Collect Static Pages"
+mode = "sequential"
+author = 31621477
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python manage.py migrate --noinput"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python manage.py collectstatic --noinput"

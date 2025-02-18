@@ -128,7 +128,7 @@ postgres_dict_config = {
 
 # Database
 DATABASES = {
-    "default": dj_database_url.config(default=env("DATABASE_URL"))
+    "default": dj_database_url.config(default=env("DATABASE_URL"), conn_max_age=600, ssl_require=True),
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
