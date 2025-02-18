@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: freeze-requirements
         name: Freeze requirements into requirements.txt
-        entry: sh -c "uv pip freeze > requirements.txt"
+        entry: sh -c 'if command -v uv >/dev/null 2>&1; then uv pip freeze > requirements.txt; else pip freeze > requirements.txt; fi'
         language: system
         always_run: true
