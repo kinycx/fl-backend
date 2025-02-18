@@ -16,6 +16,8 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
     git clone <repository_url>
     ```
 
+### Using pip and venv
+
 2. Create a virtual environment:
 
     ```bash
@@ -41,6 +43,8 @@ This is a Django app for FL-Backend. It provides instructions on how to set up a
     ```bash
     pip install -r requirements.txt
     ```
+
+### Using uv package manager
 
 ## Database Setup
 
