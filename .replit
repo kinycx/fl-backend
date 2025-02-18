@@ -33,6 +33,7 @@ externalPort = 80
 
 
 [workflows]
+runButton = "Migrate and Collect Static Pages"
 
 [[workflows.workflow]]
 name = "Migrate and Collect Static Pages"
