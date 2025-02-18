@@ -38,7 +38,7 @@ runButton = "Migrate and Collect Static Pages"
 [[workflows.workflow]]
 name = "Migrate and Collect Static Pages"
 mode = "sequential"
-author = 31621477
+author = keewee
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
