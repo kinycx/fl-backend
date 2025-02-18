@@ -1,19 +1,8 @@
 run = [
-    "sh", "-c",
-    "python",
-    "manage.py",
-    "migrate",
-    "--noinput",
-    "python",
-    "manage.py",
-    "collectstatic",
-    "--noinput",
     "gunicorn",
     "frequenza_libera.wsgi:application",
-    "--host",
-    "0.0.0.0",
-    "--port",
-    "3000"
+    "--bind",
+    "0.0.0.0:3000"
 ]
 
 packager.language = "python3"
@@ -33,13 +22,27 @@ language = "python3"
 run = [
     "gunicorn",
     "frequenza_libera.wsgi:application",
-    "--host",
-    "0.0.0.0",
-    "--port",
-    "3000"
+    "--bind",
+    "0.0.0.0:3000"
 ]
 deploymentTarget = "cloudrun"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Migrate and Collect Static Pages"
+mode = "sequential"
+author = 31621477
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python manage.py migrate --noinput"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python manage.py collectstatic --noinput"
