@@ -11,12 +11,12 @@ email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
     service_name="s3",
-    aws_access_key_id=settings.AWS_ACCESS_KEY,
-    aws_secret_access_key=settings.AWS_SECRET_KEY,
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
     region_name="eu-north-1",
 )
 
-bucket_url = f"https://{settings.BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+bucket_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
 
 
 class iTunesPodcastsFeedGenerator(Rss201rev2Feed):

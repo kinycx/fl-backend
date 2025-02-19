@@ -15,8 +15,8 @@ class Command(BaseCommand):
     help = "Loads a JSON file to populate the Podcast model. Example usage: python3 manage.py seed --json_file _old/feed.json --cutoff 2023 5 12"
     s3_client = boto3.client(
         "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY,
-        aws_secret_access_key=settings.AWS_SECRET_KEY,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
     )
 
     def add_arguments(self, parser):
@@ -69,7 +69,7 @@ class Command(BaseCommand):
 
             # Check if the audio and cover files exist in S3
             if not self.file_exists_in_s3(
-                settings.BUCKET_NAME,
+                settings.AWS_S3_BUCKET_NAME,
                 f"{settings.AUDIO_UPLOAD_FOLDER}{os.path.basename(item['guid'])}",
             ):
                 print(f"File {audio_url} does not exist in S3")

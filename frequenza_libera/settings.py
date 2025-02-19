@@ -28,14 +28,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("DJANGO_SECRET_KEY")
-
-AWS_REGION = env("AWS_REGION", default="eu-north-1")
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_S3_BUCKET_NAME = env("AWS_S3_BUCKET_NAME")
-
 # SECURITY SETTINGS (if DEBUG is True, these settings are ignored)
 # This is a list of host/domain names that the application can serve.
 # Django will only accept HTTP requests whose Host header matches an entry in this list.
@@ -167,11 +159,13 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Project settings
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+
+AWS_REGION = env("AWS_REGION", default="eu-north-1")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_S3_BUCKET_NAME = env("AWS_S3_BUCKET_NAME")
 AUDIO_UPLOAD_FOLDER = "MP3_PODCAST/"
 COVER_UPLOAD_FOLDER = "podcast_covers/"
-
-AWS_ACCESS_KEY = env("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = env("AWS_SECRET_KEY")
-BUCKET_NAME = env("BUCKET_NAME")
-
 PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 500))
