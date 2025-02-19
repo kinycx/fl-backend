@@ -32,24 +32,30 @@ DEBUG = env("DEBUG")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 AWS_REGION = env("AWS_REGION", default="eu-north-1")
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_KEY")
-AWS_S3_BUCKET_NAME = env("BUCKET_NAME")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_S3_BUCKET_NAME = env("AWS_S3_BUCKET_NAME")
 
+# SECURITY SETTINGS (if DEBUG is True, these settings are ignored)
+# This is a list of host/domain names that the application can serve. 
+# Django will only accept HTTP requests whose Host header matches an entry in this list. 
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
+# When Django's CSRF middleware checks incoming POST requests,
+# it ensures that the request comes from one of these trusted origins (including the protocol, such as "https://")
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://localhost", "https://localhost"])
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS: bool = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
 
 if not CORS_ALLOW_ALL_ORIGINS:
     CORS_ALLOWED_ORIGINS: list[str] = env.list(
-        "CORS_ALLOWED_ORIGINS", default=["https://example.com"]
+        "CORS_ALLOWED_ORIGINS", default=["http://localhost:3000"]
     )
 else:
     CORS_ALLOWED_ORIGINS = []
 
-# Set allowed hosts for production
-# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["yourdomain.com"])
-ALLOWED_HOSTS = ["testserver", env("PROD_HOST"), "localhost", "127.0.0.1", "0.0.0.0"]
-CSRF_TRUSTED_ORIGINS = [f"https://{env('PROD_HOST')}"]
+SECURE_SSL_REDIRECT: bool = env.bool("SECURE_SSL_REDIRECT", default=True)
+SESSION_COOKIE_SECURE: bool = env.bool("SESSION_COOKIE_SECURE", default=True)
+CSRF_COOKIE_SECURE: bool = env.bool("CSRF_COOKIE_SECURE", default=True)
 
 # Application definition
 INSTALLED_APPS = [
@@ -154,11 +160,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
-# Security settings
-SECURE_SSL_REDIRECT: bool = env.bool("SECURE_SSL_REDIRECT", default=True)
-SESSION_COOKIE_SECURE: bool = env.bool("SESSION_COOKIE_SECURE", default=True)
-CSRF_COOKIE_SECURE: bool = env.bool("CSRF_COOKIE_SECURE", default=True)
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
