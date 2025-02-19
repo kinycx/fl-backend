@@ -37,12 +37,14 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET_NAME = env("AWS_S3_BUCKET_NAME")
 
 # SECURITY SETTINGS (if DEBUG is True, these settings are ignored)
-# This is a list of host/domain names that the application can serve. 
-# Django will only accept HTTP requests whose Host header matches an entry in this list. 
+# This is a list of host/domain names that the application can serve.
+# Django will only accept HTTP requests whose Host header matches an entry in this list.
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
 # When Django's CSRF middleware checks incoming POST requests,
 # it ensures that the request comes from one of these trusted origins (including the protocol, such as "https://")
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://localhost", "https://localhost"])
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS", default=["http://localhost", "https://localhost"]
+)
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS: bool = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
 
@@ -127,14 +129,14 @@ postgres_dict_config = {
     "HOST": env("PGHOST"),
     "PORT": env("PGPORT"),
     "CONN_HEALTH_CHECKS": True,
-    "OPTIONS": {
-        "sslmode": "require"
-    }
+    "OPTIONS": {"sslmode": "require"},
 }
 
 # Database
 DATABASES = {
-    "default": dj_database_url.config(default=env("DATABASE_URL"), conn_max_age=600, ssl_require=True),
+    "default": dj_database_url.config(
+        default=env("DATABASE_URL"), conn_max_age=600, ssl_require=True
+    ),
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
