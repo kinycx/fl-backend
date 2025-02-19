@@ -16,7 +16,9 @@ s3 = boto3.client(
     region_name="eu-north-1",
 )
 
-bucket_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+bucket_url = (
+    f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+)
 
 
 class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
@@ -69,10 +71,12 @@ class PodcastFeed(Feed):
     feed_type = iTunesPodcastsFeedGenerator
     title = "Podcast Radio Frequenza Libera"
     link = "https://www.frequenzalibera.it"  # Change this line
-    description = "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, " \
-            "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora " \
-            "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle " \
-            "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
+    description = (
+        "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, "
+        "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora "
+        "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle "
+        "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
+    )
     author_name = "Radio Frequenza Libera"
     author_email = email
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
@@ -80,7 +84,7 @@ class PodcastFeed(Feed):
     language = "it"
 
     def items(self):
-        return Podcast.objects.all().order_by("-insert_time")[:settings.PODCAST_LIMIT]
+        return Podcast.objects.all().order_by("-insert_time")[: settings.PODCAST_LIMIT]
 
     def item_title(self, item):
         return item.title

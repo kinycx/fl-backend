@@ -24,6 +24,7 @@ class PodcastListCreateView(ListCreateAPIView):
     serializer_class = PodcastSerializer
     pagination_class = PodcastPagination
 
+
 class PodcastRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     """View for retrieving, updating and deleting Podcasts (GET, PUT, DELETE)"""
 

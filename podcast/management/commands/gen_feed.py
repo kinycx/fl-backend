@@ -8,6 +8,7 @@ from podcast.models import Podcast
 
 logger = logging.getLogger(__name__)
 
+
 class Command(BaseCommand):
     help = "Generate RSS feed and save to S3"
 

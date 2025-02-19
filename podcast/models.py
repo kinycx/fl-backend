@@ -72,11 +72,15 @@ class Podcast(models.Model):
         if "audio_file" in self.changed_fields:
             filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
             key = f"{settings.AUDIO_UPLOAD_FOLDER}{filename}"
-            self.audio_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+            self.audio_url = (
+                f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+            )
         if "cover_file" in self.changed_fields:
             filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
             key = f"{settings.COVER_UPLOAD_FOLDER}{filename}"
-            self.cover_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+            self.cover_url = (
+                f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+            )
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()

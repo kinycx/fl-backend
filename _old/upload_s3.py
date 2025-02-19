@@ -33,6 +33,7 @@ with open("feed.json", "r", encoding="utf-8") as json_file:
 total_items = len(data["items"])
 failed_uploads = []
 
+
 # Function to check if a file exists in the S3 bucket
 def file_exists_in_s3(bucket_name, s3_key):
     try:
@@ -43,6 +44,7 @@ def file_exists_in_s3(bucket_name, s3_key):
             return False
         else:
             raise
+
 
 # Upload files to S3 and log progress
 for index, item in enumerate(data["items"]):

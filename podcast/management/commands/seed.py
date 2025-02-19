@@ -11,12 +11,13 @@ from datetime import datetime, timezone
 from django.db.utils import IntegrityError
 from django.conf import settings
 
+
 class Command(BaseCommand):
     help = "Loads a JSON file to populate the Podcast model. Example usage: python3 manage.py seed --json_file _old/feed.json --cutoff 2023 5 12"
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
     )
 
     def add_arguments(self, parser):

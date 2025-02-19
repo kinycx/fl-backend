@@ -9,6 +9,7 @@ from .models import Podcast
 # Set up logging
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=Podcast)
 @receiver(post_delete, sender=Podcast)
 def update_feed(sender, **kwargs):
