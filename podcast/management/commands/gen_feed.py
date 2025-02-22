@@ -3,8 +3,10 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 import logging
 import xml.etree.ElementTree as ET
-from services.feed import iTunesPodcastsFeedGenerator, email, PODCAST_LIMIT
+
+from services.feed import iTunesPodcastsFeedGenerator
 from podcast.models import Podcast
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +24,15 @@ class Command(BaseCommand):
             "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle "
             "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!",
             author_name="Radio Frequenza Libera",
-            author_email=email,
+            author_email=settings.EMAIL,
             categories=("Arts", "Games & Hobbies > Video Games", "News & Politics"),
             image="https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg",
             language="it",
         )
 
-        podcasts = Podcast.objects.all().order_by("-insert_time")[:PODCAST_LIMIT]
+        podcasts = Podcast.objects.all().order_by("-insert_time")[
+            : settings.PODCAST_LIMIT
+        ]
 
         logger.debug(f"Podcasts: {podcasts.count()}")
 

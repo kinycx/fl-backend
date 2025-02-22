@@ -168,4 +168,5 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET_NAME = env("AWS_S3_BUCKET_NAME")
 AUDIO_UPLOAD_FOLDER = "MP3_PODCAST/"
 COVER_UPLOAD_FOLDER = "podcast_covers/"
-PODCAST_LIMIT: int = int(os.getenv("PODCAST_LIMIT", 500))
+PODCAST_LIMIT = env.int("PODCAST_LIMIT", default=500)
+EMAIL = env("EMAIL", default="rfl.radiofrequenzalibera@gmail.com")

@@ -1,13 +1,10 @@
-import os
 import boto3
-from datetime import datetime, date
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 
 from podcast.models import Podcast
 from django.conf import settings
 
-email = os.getenv("EMAIL", "rfl.radiofrequenzalibera@gmail.com")
 
 s3 = boto3.client(
     service_name="s3",
@@ -38,7 +35,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         super().add_root_elements(handler)
         handler.addQuickElement(
             "managingEditor",
-            email,
+            settings.EMAIL,
         )
 
         handler.addQuickElement("itunes:author", "Radio Frequenza Libera")
@@ -63,7 +60,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
 
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
-        handler.addQuickElement("itunes:email", email)
+        handler.addQuickElement("itunes:email", settings.EMAIL)
         handler.endElement("itunes:owner")
 
 
@@ -78,7 +75,7 @@ class PodcastFeed(Feed):
         "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
     )
     author_name = "Radio Frequenza Libera"
-    author_email = email
+    author_email = settings.EMAIL
     categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
     image = "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
     language = "it"
