@@ -15,9 +15,22 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         }
 
     def add_item_elements(self, handler, item):
+        # Call default behavior
         super().add_item_elements(handler, item)
-        handler.startElement("itunes:image", {"href": item["enclosure_cover"]})
-        handler.endElement("itunes:image")
+
+        # Add enclosure tag if values provided.
+        if item.get("enclosure_url"):
+            attributes = {
+                "url": item["enclosure_url"],
+                "length": str(item.get("enclosure_length", 0)),
+                "type": item.get("enclosure_mime_type", "audio/mpeg"),
+            }
+            handler.addQuickElement("enclosure", "", attributes)
+
+        # Add itunes:image if provided.
+        if item.get("enclosure_cover"):
+            handler.startElement("itunes:image", {"href": item["enclosure_cover"]})
+            handler.endElement("itunes:image")
 
     def add_root_elements(self, handler):
         super().add_root_elements(handler)
@@ -39,13 +52,12 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.endElement("itunes:category")
         handler.startElement(
             "itunes:category", {"text": "Games & Hobbies"}
-        )  # Change this line
+        )
         handler.endElement("itunes:category")
         handler.startElement(
             "itunes:category", {"text": "Government"}
-        )  # Change this line
+        )
         handler.endElement("itunes:category")
-
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
         handler.addQuickElement("itunes:email", settings.EMAIL)

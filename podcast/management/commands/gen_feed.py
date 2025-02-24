@@ -10,7 +10,6 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-
 class Command(BaseCommand):
     help = "Generate RSS feed and save to S3"
 
@@ -37,18 +36,18 @@ class Command(BaseCommand):
         logger.debug(f"Podcasts: {podcasts.count()}")
 
         for podcast in podcasts:
+
             feed.add_item(
                 title=podcast.title,
                 link=podcast.audio_url,
                 description=podcast.description,
                 unique_id=podcast.audio_url,
                 enclosure_url=podcast.audio_url,
-                enclosure_length=podcast.duration,
+                enclosure_length=0,  # Length is not required
                 enclosure_mime_type="audio/mpeg",
                 pubdate=podcast.insert_time,
                 enclosure_cover=podcast.cover_url,
             )
-
         # Convert the feed to a string
         feed_content = feed.writeString("utf-8")
 
