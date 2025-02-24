@@ -65,12 +65,12 @@ class Podcast(models.Model):
         super().clean()
         # Only allow letters, numbers, dots, underscores, and hyphens
         allowed_pattern = re.compile(r'^[A-Za-z0-9._-]+$')
-        if self.audio_file:
+        if self.audio_file and "audio_file" in self.changed_fields:
             if not allowed_pattern.match(self.audio_file.name):
                 raise ValidationError({
                     'audio_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
                 })
-        if self.cover_file:
+        if self.cover_file and "cover_file" in self.changed_fields:
             if not allowed_pattern.match(self.cover_file.name):
                 raise ValidationError({
                     'cover_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
