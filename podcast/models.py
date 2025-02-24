@@ -1,11 +1,9 @@
+import re
 import uuid
 import boto3
 import html
-
-# import tempfile
-# import requests
-from urllib.parse import quote
 from datetime import datetime
+from django.core.exceptions import ValidationError
 from django.db import models
 from rest_framework import serializers
 
@@ -18,7 +16,7 @@ s3 = boto3.client(
     service_name="s3",
     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name="eu-north-1",
+    region_name=settings.AWS_REGION
 )
 
 
@@ -62,22 +60,34 @@ class Podcast(models.Model):
             for field in self._meta.get_fields()
             if getattr(self, field.name) != self.initial_values[field.name]
         }
+        
+    def clean(self):
+        super().clean()
+        # Only allow letters, numbers, dots, underscores, and hyphens
+        allowed_pattern = re.compile(r'^[A-Za-z0-9._-]+$')
+        if self.audio_file:
+            if not allowed_pattern.match(self.audio_file.name):
+                raise ValidationError({
+                    'audio_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
+                })
+        if self.cover_file:
+            if not allowed_pattern.match(self.cover_file.name):
+                raise ValidationError({
+                    'cover_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
+                })
 
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
-        sf = "/~"  # safe characters, including %
         self.title = html.unescape(self.title)
         self.description = html.unescape(self.description)
 
         if "audio_file" in self.changed_fields:
-            filename = quote(self.audio_file.name.replace(" ", "_"), safe=sf)
-            key = f"{settings.AUDIO_UPLOAD_FOLDER}{filename}"
+            key = f"{settings.AUDIO_UPLOAD_FOLDER}{self.audio_file.name}"
             self.audio_url = (
                 f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
             )
         if "cover_file" in self.changed_fields:
-            filename = quote(self.cover_file.name.replace(" ", "_"), safe=sf)
-            key = f"{settings.COVER_UPLOAD_FOLDER}{filename}"
+            key = f"{settings.COVER_UPLOAD_FOLDER}{self.cover_file.name}"
             self.cover_url = (
                 f"https://{settings.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
             )
