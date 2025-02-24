@@ -1,20 +1,8 @@
-import boto3
-from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
-
-from podcast.models import Podcast
 from django.conf import settings
 
-
-s3 = boto3.client(
-    service_name="s3",
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=settings.AWS_REGION
-)
-
 bucket_url = (
-    f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{s3.meta.region_name}.amazonaws.com/"
+    f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_REGION}.amazonaws.com/"
 )
 
 
@@ -43,7 +31,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.startElement(
             "itunes:image",
             {
-                "href": "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
+                "href": "{bucket_url}podcast_media_generics/foto+profilo.jpg"
             },
         )
         handler.endElement("itunes:image")
@@ -62,57 +50,3 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")
         handler.addQuickElement("itunes:email", settings.EMAIL)
         handler.endElement("itunes:owner")
-
-
-class PodcastFeed(Feed):
-    feed_type = iTunesPodcastsFeedGenerator
-    title = "Podcast Radio Frequenza Libera"
-    link = "https://www.frequenzalibera.it"  # Change this line
-    description = (
-        "Dal 2013 frequenza Libera vive e da voce agli studenti e alle studentesse degli atenei senza distinzione, "
-        "associazione web radio fondata dagli stessi in modalità volontaria.Patrocinata dal Politecnico di Bari, è tutt'ora "
-        "uno spazio di incontro, collaborazione, contaminazione e diffusione. Dai podcast intrattenitivi o divulgativi alle "
-        "chiacchierate e interviste con ospiti tra i più svariati, dagli artisti, registi, professori e tanto altro... Seguici, e vedi che ti ascolti!"
-    )
-    author_name = "Radio Frequenza Libera"
-    author_email = settings.EMAIL
-    categories = ("Arts", "Games & Hobbies > Video Games", "News & Politics")
-    image = "https://podcast-fl.s3.eu-north-1.amazonaws.com/podcast_media_generics/foto+profilo.jpg"
-    language = "it"
-
-    def items(self):
-        return Podcast.objects.all().order_by("-insert_time")[: settings.PODCAST_LIMIT]
-
-    def item_title(self, item):
-        return item.title
-
-    def item_description(self, item):
-        return item.description
-
-    def item_link(self, item):
-        return item.audio_url
-
-    def item_enclosure_url(self, item):
-        return item.audio_url
-
-    def item_enclosure_length(self, item):
-        return item.duration
-
-    def item_enclosure_mime_type(self, item):
-        return "audio/mpeg"
-
-    def item_enclosure_cover(self, item):
-        return item.cover_url
-
-    def item_guid(self, item):  # Add this method
-        return item.audio_url
-
-    def item_explicit(self, item):  # Add this method
-        return "no"
-
-    def item_pubdate(self, item):
-        # Combine the current date with the time
-        return item.insert_time
-
-    def item_extra_kwargs(self, item):
-        return {"enclosure_cover": self.item_enclosure_cover(item)}
