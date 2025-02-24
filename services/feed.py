@@ -31,7 +31,7 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.startElement(
             "itunes:image",
             {
-                "href": "{bucket_url}podcast_media_generics/foto+profilo.jpg"
+                "href": f"{bucket_url}podcast_media_generics/foto+profilo.jpg"
             },
         )
         handler.endElement("itunes:image")
