@@ -16,8 +16,23 @@ from .pagination import PodcastPagination
 
 from frequenza_libera.settings import BASE_DIR
 
+class PodcastListByCollectionCreateView(ListCreateAPIView):
+    """View for listing and creating Podcasts by Collection (GET, POST)"""
 
-class PodcastListCreateView(ListCreateAPIView):
+    queryset = Podcast.objects.all()
+    serializer_class = PodcastSerializer
+
+    def get_queryset(self):
+        collection = self.kwargs["collection"]
+        return Podcast.objects.filter(collection=collection)
+
+    def post(self, request, *args, **kwargs):
+        collection = self.kwargs["collection"]
+        logger.info(f"Creating Podcast in Collection {collection}")
+        return super().post(request, *args, **kwargs)
+
+
+class PodcastListCreatePaginatedView(ListCreateAPIView):
     """View for listing and creating Podcasts (GET, POST)"""
 
     queryset = Podcast.objects.all()

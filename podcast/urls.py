@@ -1,13 +1,19 @@
 from django.urls import path
 from .views import (
-    PodcastListCreateView,
+    PodcastListCreatePaginatedView,
+    PodcastListByCollectionCreateView,
     PodcastRetrieveUpdateDestroyView,
     BulkCreatePodcastView,
 )
 
 
 urlpatterns = [
-    path("", PodcastListCreateView.as_view(), name="podcast-list-create"),
+    path("", PodcastListCreatePaginatedView.as_view(), name="podcast-list-create"),
+    path(
+        "collection/<str:collection>/",
+        PodcastListByCollectionCreateView.as_view(),
+        name="podcast-list-by-collection-create",
+    ),
     path("bulk/", BulkCreatePodcastView.as_view(), name="podcast-bulk-create"),
     path(
         "<str:pk>/",
