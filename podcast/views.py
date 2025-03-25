@@ -35,7 +35,7 @@ class PodcastListByCollectionCreateView(ListCreateAPIView):
 class PodcastListCreatePaginatedView(ListCreateAPIView):
     """View for listing and creating Podcasts (GET, POST)"""
 
-    queryset = Podcast.objects.all()
+    queryset = Podcast.objects.all().order_by("-insert_time")
     serializer_class = PodcastSerializer
     pagination_class = PodcastPagination
 
