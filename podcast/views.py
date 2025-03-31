@@ -19,7 +19,7 @@ from frequenza_libera.settings import BASE_DIR
 class PodcastListByCollectionCreateView(ListCreateAPIView):
     """View for listing and creating Podcasts by Collection (GET, POST)"""
 
-    queryset = Podcast.objects.all()
+    queryset = Podcast.objects.all().order_by("-insert_time")
     serializer_class = PodcastSerializer
 
     def get_queryset(self):
