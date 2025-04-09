@@ -24,7 +24,7 @@ class PodcastListByCollectionCreateView(ListCreateAPIView):
 
     def get_queryset(self):
         collection = self.kwargs["collection"]
-        return Podcast.objects.filter(collection=collection)
+        return Podcast.objects.filter(collection=collection).order_by("insert_time")
 
     def post(self, request, *args, **kwargs):
         collection = self.kwargs["collection"]
