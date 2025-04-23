@@ -16,7 +16,7 @@ s3 = boto3.client(
     service_name="s3",
     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=settings.AWS_REGION
+    region_name=settings.AWS_REGION,
 )
 
 
@@ -60,21 +60,25 @@ class Podcast(models.Model):
             for field in self._meta.get_fields()
             if getattr(self, field.name) != self.initial_values[field.name]
         }
-        
+
     def clean(self):
         super().clean()
         # Only allow letters, numbers, dots, underscores, and hyphens
-        allowed_pattern = re.compile(r'^[A-Za-z0-9._-]+$')
+        allowed_pattern = re.compile(r"^[A-Za-z0-9._-]+$")
         if self.audio_file and "audio_file" in self.changed_fields:
             if not allowed_pattern.match(self.audio_file.name):
-                raise ValidationError({
-                    'audio_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
-                })
+                raise ValidationError(
+                    {
+                        "audio_file": "File name can only contain letters, numbers, dots, underscores, and hyphens."
+                    }
+                )
         if self.cover_file and "cover_file" in self.changed_fields:
             if not allowed_pattern.match(self.cover_file.name):
-                raise ValidationError({
-                    'cover_file': 'File name can only contain letters, numbers, dots, underscores, and hyphens.'
-                })
+                raise ValidationError(
+                    {
+                        "cover_file": "File name can only contain letters, numbers, dots, underscores, and hyphens."
+                    }
+                )
 
     # override save method to add audio_url field
     def save(self, *args, **kwargs):
@@ -94,6 +98,11 @@ class Podcast(models.Model):
 
         if self.insert_time is None:
             self.insert_time = datetime.now().time()
+
+        # Update the collection's update_time if a collection is associated
+        if self.collection:
+            self.collection.update_time = datetime.now()
+            self.collection.save()
 
         super().save(*args, **kwargs)
 
