@@ -100,7 +100,7 @@ class Podcast(models.Model):
             self.insert_time = datetime.now().time()
 
         # Update the collection's update_time if a collection is associated
-        if self.collection:
+        if self.collection and self.pk is None:
             self.collection.update_time = datetime.now()
             self.collection.save()
 
