@@ -1,15 +1,16 @@
-import os
-import boto3
-import json
-import re
 import html
-
-from botocore.exceptions import ClientError
-from podcast.models import Podcast
-from django.core.management.base import BaseCommand
+import json
+import os
+import re
 from datetime import datetime, timezone
-from django.db.utils import IntegrityError
+
+import boto3
+from botocore.exceptions import ClientError
 from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+
+from podcast.models import Podcast
 
 
 class Command(BaseCommand):
@@ -36,9 +37,7 @@ class Command(BaseCommand):
             return True
         except ClientError as e:
             if e.response["Error"]["Code"] == "404":
-                self.stdout.write(
-                    self.style.ERROR(f"File {s3_key} does not exist in S3")
-                )
+                self.stdout.write(self.style.ERROR(f"File {s3_key} does not exist in S3"))
                 return False
             else:
                 raise
@@ -53,9 +52,7 @@ class Command(BaseCommand):
             published_date_str = item.get("published", "")
             if published_date_str:
                 # Parse the published date
-                published_date = datetime.strptime(
-                    published_date_str, "%a, %d %b %Y %H:%M:%S %Z"
-                )
+                published_date = datetime.strptime(published_date_str, "%a, %d %b %Y %H:%M:%S %Z")
                 published_date = published_date.replace(tzinfo=timezone.utc)
             else:
                 published_date = None
@@ -77,16 +74,12 @@ class Command(BaseCommand):
                 continue
 
             title = re.sub(r"\s+", " ", html.unescape(item["title"]).strip())
-            description = re.sub(
-                r"\s+", " ", html.unescape(item["description"]).strip()
-            )
+            description = re.sub(r"\s+", " ", html.unescape(item["description"]).strip())
 
             # Check if a podcast with the same title already exists
             if Podcast.objects.filter(title=title).exists():
                 self.stdout.write(
-                    self.style.WARNING(
-                        f"Podcast with title '{title}' already exists. Skipping."
-                    )
+                    self.style.WARNING(f"Podcast with title '{title}' already exists. Skipping.")
                 )
                 continue
 
@@ -98,12 +91,8 @@ class Command(BaseCommand):
                     audio_url=audio_url,
                     cover_url=cover_url,
                 )
-                self.stdout.write(
-                    self.style.SUCCESS(f"Successfully added {title} to podcasts")
-                )
+                self.stdout.write(self.style.SUCCESS(f"Successfully added {title} to podcasts"))
             except IntegrityError as e:
                 self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to add {title} due to IntegrityError: {e}"
-                    )
+                    self.style.ERROR(f"Failed to add {title} due to IntegrityError: {e}")
                 )

@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
-import environ
+
 import dj_database_url
+import environ
 
 env = environ.Env(
     # set casting, default value
@@ -120,14 +122,13 @@ postgres_dict_config = {
     "HOST": env("PGHOST"),
     "PORT": env("PGPORT"),
     "CONN_HEALTH_CHECKS": True,
-    "OPTIONS": {"sslmode": "require"},
+    "OPTIONS": {"sslmode": "prefer" if env("PGHOST") == "localhost" else "require"},
 }
 
 # Database
 DATABASES = {
-    "default": dj_database_url.config(
-        default=env("DATABASE_URL"), conn_max_age=600, ssl_require=True
-    ),
+    "default": postgres_dict_config
+    or dj_database_url.config(default=env("DATABASE_URL"), conn_max_age=600, ssl_require=True)
 }
 FILE_UPLOAD_MAX_MEMORY_SIZE = 262144000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
@@ -156,6 +157,7 @@ USE_TZ = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+TEST_RUNNER = "frequenza_libera.test_runner.SafeTestRunner"
 
 # Project settings
 # SECURITY WARNING: keep the secret key used in production secret!

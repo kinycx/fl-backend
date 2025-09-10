@@ -1,14 +1,16 @@
-from django.core.management.base import BaseCommand
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
 import logging
 import xml.etree.ElementTree as ET
 
-from services.feed import iTunesPodcastsFeedGenerator
-from podcast.models import Podcast
 from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.core.management.base import BaseCommand
+
+from podcast.models import Podcast
+from services.feed import iTunesPodcastsFeedGenerator
 
 logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     help = "Generate RSS feed and save to S3"
@@ -29,14 +31,11 @@ class Command(BaseCommand):
             language="it",
         )
 
-        podcasts = Podcast.objects.all().order_by("-insert_time")[
-            : settings.PODCAST_LIMIT
-        ]
+        podcasts = Podcast.objects.all().order_by("-insert_time")[: settings.PODCAST_LIMIT]
 
         logger.debug(f"Podcasts: {podcasts.count()}")
 
         for podcast in podcasts:
-
             feed.add_item(
                 title=podcast.title,
                 link=podcast.audio_url,

@@ -1,8 +1,9 @@
-import feedparser
 import json
-import requests
 import os
 from datetime import datetime, timezone
+
+import feedparser
+import requests
 
 # Define the folders
 audio_folder = "audio"
@@ -60,9 +61,7 @@ for entry in feed.entries:
             # Download the cover image
             image_url = item["image"]
             image_response = requests.get(image_url)
-            image_filename = os.path.join(
-                cover_image_folder, os.path.basename(image_url)
-            )
+            image_filename = os.path.join(cover_image_folder, os.path.basename(image_url))
             with open(image_filename, "wb") as image_file:
                 image_file.write(image_response.content)
 

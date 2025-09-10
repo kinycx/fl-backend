@@ -1,9 +1,7 @@
-from django.utils.feedgenerator import Rss201rev2Feed
 from django.conf import settings
+from django.utils.feedgenerator import Rss201rev2Feed
 
-bucket_url = (
-    f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_REGION}.amazonaws.com/"
-)
+bucket_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_REGION}.amazonaws.com/"
 
 
 class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
@@ -43,20 +41,14 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement("itunes:explicit", "false")
         handler.startElement(
             "itunes:image",
-            {
-                "href": f"{bucket_url}podcast_media_generics/foto+profilo.jpg"
-            },
+            {"href": f"{bucket_url}podcast_media_generics/foto+profilo.jpg"},
         )
         handler.endElement("itunes:image")
         handler.startElement("itunes:category", {"text": "Arts"})
         handler.endElement("itunes:category")
-        handler.startElement(
-            "itunes:category", {"text": "Games & Hobbies"}
-        )
+        handler.startElement("itunes:category", {"text": "Games & Hobbies"})
         handler.endElement("itunes:category")
-        handler.startElement(
-            "itunes:category", {"text": "Government"}
-        )
+        handler.startElement("itunes:category", {"text": "Government"})
         handler.endElement("itunes:category")
         handler.startElement("itunes:owner", {})
         handler.addQuickElement("itunes:name", "Radio Frequenza Libera")

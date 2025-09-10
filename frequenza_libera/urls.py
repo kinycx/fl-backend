@@ -16,8 +16,8 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
 from django.shortcuts import redirect
+from django.urls import include, path
 
 admin.site.site_header = "Sei l'admin di Frequenza Libera cazzo, complimenti"
 

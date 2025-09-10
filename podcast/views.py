@@ -1,20 +1,22 @@
 # Create your views here.
-import os
 import json
+import os
+import random
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.generics import (
-    get_object_or_404,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from frequenza_libera.settings import BASE_DIR
 from logger import logger
+
 from .models import Podcast, PodcastSerializer
 from .pagination import PodcastPagination
 
-from frequenza_libera.settings import BASE_DIR
 
 class PodcastListByCollectionCreateView(ListCreateAPIView):
     """View for listing and creating Podcasts by Collection (GET, POST)"""
@@ -61,3 +63,19 @@ class BulkCreatePodcastView(APIView):
                     insert_time=podcast["insert_time"],
                 )
         return Response({"message": "Podcasts created successfully"}, status=201)
+
+
+class RandomPodcastView(APIView):
+    """Return a single random Podcast (optionally filtered by ?collection=<uuid>)"""
+
+    def get(self, request, *args, **kwargs):
+        qs = Podcast.objects.all()
+        collection = request.query_params.get("collection")
+        if collection:
+            qs = qs.filter(collection=collection)
+        count = qs.count()
+        if count == 0:
+            return Response({"detail": "No podcast found"}, status=status.HTTP_404_NOT_FOUND)
+        podcast = qs[random.randint(0, count - 1)]
+        data = PodcastSerializer(podcast).data
+        return Response(data, status=status.HTTP_200_OK)

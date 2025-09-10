@@ -1,5 +1,6 @@
-import feedparser
 import json
+
+import feedparser
 import requests
 
 # Step 1: Fetch the RSS feed

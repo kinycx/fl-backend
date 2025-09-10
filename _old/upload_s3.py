@@ -1,7 +1,8 @@
-import os
 import json
+import os
+
 import boto3
-from botocore.exceptions import NoCredentialsError, ClientError
+from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -26,7 +27,7 @@ AUDIO_UPLOAD_FOLDER = "MP3_PODCAST/"
 COVER_UPLOAD_FOLDER = "podcast_covers/"
 
 # Load the JSON data
-with open("feed.json", "r", encoding="utf-8") as json_file:
+with open("feed.json", encoding="utf-8") as json_file:
     data = json.load(json_file)
 
 # Count total items

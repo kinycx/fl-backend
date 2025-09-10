@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import (
-    PodcastListCreatePaginatedView,
-    PodcastListByCollectionCreateView,
-    PodcastRetrieveUpdateDestroyView,
-    BulkCreatePodcastView,
-)
 
+from .views import (
+    BulkCreatePodcastView,
+    PodcastListByCollectionCreateView,
+    PodcastListCreatePaginatedView,
+    PodcastRetrieveUpdateDestroyView,
+    RandomPodcastView,
+)
 
 urlpatterns = [
     path("", PodcastListCreatePaginatedView.as_view(), name="podcast-list-create"),
@@ -15,6 +16,7 @@ urlpatterns = [
         name="podcast-list-by-collection-create",
     ),
     path("bulk/", BulkCreatePodcastView.as_view(), name="podcast-bulk-create"),
+    path("random/", RandomPodcastView.as_view(), name="podcast-random"),
     path(
         "<str:pk>/",
         PodcastRetrieveUpdateDestroyView.as_view(),

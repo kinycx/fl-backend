@@ -1,8 +1,10 @@
-from django.core.management.base import BaseCommand
-from django.db.utils import IntegrityError
-from podcast.models import Podcast
 import html
 import re
+
+from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+
+from podcast.models import Podcast
 
 
 class Command(BaseCommand):
@@ -31,9 +33,7 @@ class Command(BaseCommand):
             podcast.title = re.sub(r"\s+", " ", podcast.title.strip())
             if podcast.title != old_title:
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Normalized whitespace in title: {podcast.title}"
-                    )
+                    self.style.SUCCESS(f"Normalized whitespace in title: {podcast.title}")
                 )
 
             entry = (podcast.title, podcast.description)
@@ -55,8 +55,6 @@ class Command(BaseCommand):
         # Delete duplicates
         if duplicates:
             Podcast.objects.filter(id__in=duplicates).delete()
-            self.stdout.write(
-                self.style.SUCCESS(f"Deleted {len(duplicates)} duplicate entries")
-            )
+            self.stdout.write(self.style.SUCCESS(f"Deleted {len(duplicates)} duplicate entries"))
         else:
             self.stdout.write(self.style.SUCCESS("No duplicates found"))
